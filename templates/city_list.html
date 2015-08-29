@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<body>
+        <h3>Here are the top 5 suggestions for you:</h3>
+        {% for city, trail, event, rest in city_list %}
+            City:&nbsp;&nbsp;{{ city }}<br>
+            Number of Outdoor Recreation activities:&nbsp;&nbsp;{{ trail }}<br>
+            Number of Events such as concerts or festivals:&nbsp;&nbsp;{{ event }}<br>
+            Number of Top rated restaurants (rater 4.0 or higher):&nbsp;&nbsp;{{ rest }}<br><br>
+        {% endfor %}
+
+        <a href="index.html">Return to search page.</a>
+</body>
+{% endblock %}

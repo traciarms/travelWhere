@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+
+    <h3>Please Login</h3>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% bootstrap_form form layout='inline'%}
+        <input type="submit" value="Login">
+
+    </form>
+
+    <div style="text-align: center">
+        <a href="{% url 'password_reset' %}">forgot password?</a>
+    </div>
+
+{% endblock %}

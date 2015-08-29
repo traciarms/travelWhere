@@ -6,27 +6,9 @@ import rauth
 import requests
 from travel.forms import InitSearchForm
 from travelWhere.settings import ZIPCODES_API_KEY, EVENTFUL_API_KEY, \
-    TRAIL_API_KEY, YELP_API_KEY
+    TRAIL_API_KEY, consumer_key, consumer_secret, token, token_secret
+
 # Create your views here.
-
-# def avg_rating(request, select_category=None):
-# -    category_list = Category.objects.all()
-# -    movie_list = Movie.objects.exclude(rating=None)
-# -    if select_category != 'None':
-# -        movie_list = movie_list.filter(category__category__icontains=select_category)
-# -    avg_rating = movie_list.annotate(
-# -        average=Avg('rating__ratings')).order_by('-average')[:20]
-# -
-# -    return render(request, 'app1/avg_rating.html',
-# -                  {'avg_rating': avg_rating,
-# -                   'category_list': category_list,
-# -                   'select_category': select_category})
-
-
-# class SearchTwitterView(TemplateView):
-    # template_name = "index.html"
-
-
 
 def call_zipcode_api(zipcode, distance):
     response = requests.get('https://www.zipcodeapi.com/rest/{}/radius.json/{}/{}/mile'.\
@@ -60,12 +42,6 @@ def call_trails_api(search_city):
 
 
 def call_yelp_api(search_city):
-
-    #Obtain these from Yelp's manage access page
-    consumer_key = "xCvm07_lr5NIW-I4uVukzQ"
-    consumer_secret = "6tSvvoI5wYmV_vH3Ws3JIFvXAr4"
-    token = "5bfzpwor6paKASUGChfDSD9hAfHi99TZ"
-    token_secret = "JcB8IUkCPkwEa3hX8BYl9AfLHYs"
 
     session = rauth.OAuth1Session(
         consumer_key = consumer_key, consumer_secret = consumer_secret,
@@ -114,7 +90,7 @@ def get_zipcode_dict(request, user_zipcode=null):
             for each in location_list:
                 if each['distance'] > min_dist:
                     city_list.append(each['city'])
-            # location_list = location_dict['city']
+            
             city_set = set(city_list)
 
             for city in city_set:

@@ -64,7 +64,7 @@ def call_yelp_api(search_city):
     return high_rating_count
 
 
-def get_zipcode_dict(request, user_zipcode=null):
+def get_zipcode_dict(request):
     # def get_context_data(self, **kwargs):
     #     context = super(SearchTwitterView, self).get_context_data(**kwargs)
 
@@ -89,11 +89,11 @@ def get_zipcode_dict(request, user_zipcode=null):
             min_dist = distance * .75
             for each in location_list:
                 if each['distance'] > min_dist:
-                    city_list.append(each['city'])
-            
-            city_set = set(city_list)
+                    cities = [x[0] for x in city_list]
+                    if each['city'] not in cities:
+                        city_list.append((each['city'], each['state'], each['distance']))
 
-            for city in city_set:
+            for city, state, dist in city_list:
 
                 num_trails = call_trails_api(city)
                 if num_trails != 0:
@@ -103,8 +103,12 @@ def get_zipcode_dict(request, user_zipcode=null):
                         num_rests = call_yelp_api(city)
 
                         if num_rests != 0:
-                            city_event_list.append((city, num_trails, num_events, num_rests))
+                            city_event_list.append((city, state, num_trails,
+                                                    num_events, num_rests,
+                                                    dist))
 
+                            city_event_list.sort(key=lambda x: int(x[2]), reverse=True)
+                            # city_event_list = city_event_list[:5]
         context = {'city_list': city_event_list}
 
         # return HttpResponseRedirect(reverse('restaurant_profile',

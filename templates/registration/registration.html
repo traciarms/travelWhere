@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<body>
+        <h3>New Customer Registration</h3>
+    <form action = '' method = 'POST'>
+        {% csrf_token %}
+        {% bootstrap_form form layout='inline'%}
+        <input type = 'submit' value = "Register" />
+    </form>
+</body>
+{% endblock %}

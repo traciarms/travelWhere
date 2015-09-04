@@ -4,8 +4,12 @@
 <body>
         <h3>Here are the top suggestions for you:</h3>
         {% for each in city_dict %}
-            City, State:&nbsp;&nbsp;{{ each.city }}, {{ each.state }}<br>
-            Distance from origin:&nbsp;&nbsp;{{ each.dist | floatformat:1 }}&nbsp;miles<br>
+            <a href="{%  url 'city_detail' each.city.id %}">
+                City, State:&nbsp;&nbsp;{{ each.city.city }},
+                    {{ each.city.state }}<br>
+            </a>
+            Distance from origin:&nbsp;&nbsp;
+                {{ each.dist | floatformat:1 }}&nbsp;miles<br>
 
             {% for stats in each.Stats %}
                 {{ stats.Label }}:&nbsp;&nbsp;{{ stats.number }}<br>

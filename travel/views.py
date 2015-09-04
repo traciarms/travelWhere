@@ -1,138 +1,138 @@
-import null as null
-from django.http import request
+from django.contrib.auth import authenticate
+from django.contrib.auth.views import login
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.template import context
-import rauth
-import requests
-from travel.forms import InitSearchForm
-from travelWhere.settings import ZIPCODES_API_KEY, EVENTFUL_API_KEY, \
-    TRAIL_API_KEY, consumer_key, consumer_secret, token, token_secret
+from django.views.generic import DetailView
+from travel.api import call_zipcode_api
+from travel.forms import InitSearchForm, CustomerCreationForm, \
+    LoggedInSearchForm
+from travel.models import Customer, City, Restaurant, OutdoorRecreation, Hotel, \
+    Event, NightLife
 
 # Create your views here.
-
-def call_zipcode_api(zipcode, distance):
-    response = requests.get('https://www.zipcodeapi.com/rest/{}/radius.json/{}/{}/mile'.\
-                format(ZIPCODES_API_KEY, zipcode, distance))
-
-    locations = response.json()
-    location_list = locations['zip_codes']
-    return location_list
+from travel.utils import apply_default_filters, apply_user_filter, \
+    build_filter_dict, reduce_location_list
 
 
-def call_eventful_api(search_city):
-    response = requests.get('http://api.eventful.com/json/events/search?app_key={}&l={}&c={},{}'.\
-                            format(EVENTFUL_API_KEY, search_city,
-                            'festivals_parades', 'music'))
+def create_user(request):
+    if request.method == "POST":
+        form = CustomerCreationForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = form.save()
+            customer = Customer()
+            customer.user = user
+            customer.address = data['address']
+            customer.city = data['city']
+            customer.state = data['state']
+            customer.zip_code = data['zip_code']
+            customer.save()
+            user = authenticate(username=request.POST['username'],
+                                password=request.POST['password1'])
+            login(request, user)
 
-    events = response.json()
-    num_events = events['total_items']
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        form = CustomerCreationForm()
 
-
-    return num_events
-
-
-def call_trails_api(search_city):
-    response = requests.get('https://outdoor-data-api.herokuapp.com/api.json?api_key={}&q[city_eq]={}&radius=25'.\
-                           format(TRAIL_API_KEY, search_city))
-
-    trails = response.json()
-    num_trails = len(trails['places'])
-
-    return num_trails
-
-
-def call_yelp_api(search_city):
-
-    session = rauth.OAuth1Session(
-        consumer_key = consumer_key, consumer_secret = consumer_secret,
-        access_token = token, access_token_secret = token_secret)
-
-    # request = session.get("http://api.yelp.com/v2/search",params=params)
-    response = session.get('http://api.yelp.com/v2/search',
-                           params={'term': 'food', 'location': search_city})
-
-    yelp = response.json()
-    high_rating_count = 0
-
-    if 'error' not in yelp.keys():
-        for business in yelp['businesses']:
-            rating = business['rating']
-
-            if rating >= 4:
-                high_rating_count += 1
-
-    return high_rating_count
+    return render(request, 'registration/registration.html', {'form': form})
 
 
-def get_zipcode_dict(request):
-    # def get_context_data(self, **kwargs):
-    #     context = super(SearchTwitterView, self).get_context_data(**kwargs)
+class CityDetail(DetailView):
+    model = City
+    pk_url_kwarg = 'city_id'
+    template_name = 'city_detail.html'
+
+    def get_context_data(self, **kwargs):
+        city = self.object
+        context = super(CityDetail, self).get_context_data(**kwargs)
+        city = City.objects.get(pk=city.id)
+        context['restaurants'] = city.restaurant_set.all()
+        context['outdoors'] = city.outdoorrecreation_set.all()
+        context['hotels'] = city.hotel_set.all()
+        context['events'] = city.event_set.all()
+        context['nights'] = city.nightlife_set.all()
+        return context
+
+
+def location_search(request):
 
     if request.method == 'GET':
-        form = InitSearchForm()
+        if request.user.is_authenticated():
+            form = LoggedInSearchForm()
+        else:
+            form = InitSearchForm()
         context = {'form': form}
 
         return render(request, 'index.html', context)
 
     if request.method == 'POST':
-        location_list  = []
-        city_list = []
         city_event_list = []
-        form = InitSearchForm(request.POST)
+        if request.user.is_authenticated():
+            form = LoggedInSearchForm(request.POST)
+        else:
+            form = InitSearchForm(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
             distance = data['distance']
             zipcode = data['zip_code']
+
+            if request.user.is_authenticated():
+                user_filter = data['user_filter']
+
+                filter = True
+            else:
+                filter = False
+
             location_list = call_zipcode_api(zipcode, distance)
 
-            min_dist = distance * .75
-            for each in location_list:
-                if each['distance'] > min_dist:
-                    cities = [x[0] for x in city_list]
-                    if each['city'] not in cities:
-                        city_list.append((each['city'], each['state'], each['distance']))
+            city_list = reduce_location_list(distance, location_list)
+            city_dict_list = []
 
             for city, state, dist in city_list:
+                if filter:
+                    ret_tuple = apply_user_filter(user_filter,city,
+                                                    state, dist)
+                    if len(ret_tuple) > 0:
+                        city_event_list.append(ret_tuple)
+                else:
+                    ret_tuple = apply_default_filters(city, state, dist)
+                    if len(ret_tuple) > 0:
+                        city_event_list.append(ret_tuple)
 
-                num_trails = call_trails_api(city)
-                if num_trails != 0:
-                    num_events = call_eventful_api(city)
+            city_event_list.sort(key=lambda x: x[3], reverse=True)
+            city_event_list = city_event_list[:5]
 
-                    if num_events != '0':
-                        num_rests = call_yelp_api(city)
+            if not filter:
 
-                        if num_rests != 0:
-                            city_event_list.append((city, state, num_trails,
-                                                    num_events, num_rests,
-                                                    dist))
+                for city, state, dist, trail, event, rest in city_event_list:
+                    city = City.objects.get(city=city, state=state)
+                    city_dict = {'city': city,
+                                 'dist': dist,
+                                 'Stats':
+                                     [{'Label': 'Number of Outdoor Recreation '
+                                        'activities',
+                                        'number': trail},
+                                      {'Label': 'Number of Events such as '
+                                        'concerts or festivals',
+                                        'number': event},
+                                      {'Label': 'Number of Top rated '
+                                        'restaurants (rated 4.0 or '
+                                        'higher)',
+                                        'number': rest}]
+                                }
+                    city_dict_list.append(city_dict)
+            else:
+                city_dict_list = build_filter_dict(user_filter,
+                                                   city_event_list)
 
-                            city_event_list.sort(key=lambda x: int(x[2]), reverse=True)
-                            # city_event_list = city_event_list[:5]
-        context = {'city_list': city_event_list}
+            context = {'city_dict': city_dict_list,
+                       'filter': filter}
+            return render(request, 'city_list.html', context)
 
-        # return HttpResponseRedirect(reverse('restaurant_profile',
-        #                                         args=[user.restaurant.id]))
+        else:
+            context = {'form': form}
 
-        return render(request, 'city_list.html', context)
-
-
-
-# def playgame(request):
-#
-#     winner = ''
-#     try:
-#         game = Game.objects.get(completed=False)
-#     except:
-#         game = Game.objects.create(player1=User.objects.get(username='player1'),
-#                                    player2=User.objects.get(username='player2'),
-#                                    give_player=User.objects.get(username='player1'),
-#                                    form_player=User.objects.get(username='player1'))
-#     if request.method == 'GET':
-#         form = WordForm()
-#         context = {'game': game, 'form': form}
-#         return render(request, 'index.html', context)
-#
-#     if request.method == 'POST':
-#         form = WordForm(request.POST)
-#         if request.user == game.give_player:
+            return render(request, 'index.html', context)

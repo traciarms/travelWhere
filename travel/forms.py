@@ -1,23 +1,39 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.forms import Form, ModelForm
+from django.core.validators import MinValueValidator
 from django import forms
-
-from travel.models import Customer
+from travel import models
+from travel.validators import validate_zip_code
 
 
 class CustomerCreationForm(UserCreationForm):
+    address = forms.CharField(max_length=100)
+    city = forms.CharField(max_length=100)
+    state = forms.CharField(max_length=100)
+    zip_code = forms.CharField(max_length=10)
 
     class Meta:
-        model = Customer
-        fields = ('first_name', 'last_name', 'address', 'city', 'state',
-                  'zip_code', 'distance', 'first_filter', 'second_filter',
-                  'third_filter')
+        model = User
+        fields = ('username', 'address', 'city', 'state', 'zip_code')
 
-class InitSearchForm(ModelForm):
-    zip_code = forms.CharField(label='Your starting zip code', max_length=10)
-    distance = forms.IntegerField(label='How far would you like to travel on this adventure?  ')
 
-    class Meta:
-        model = Customer
-        fields = ('distance', 'zip_code')
+class InitSearchForm(forms.Form):
+    zip_code = forms.CharField(label='Your starting zip code', max_length=10,
+                               validators=[validate_zip_code])
+    distance = forms.IntegerField(label='How far would you like to travel on '
+                                        'this adventure?',
+                                  validators=[MinValueValidator(0)])
+
+
+class LoggedInSearchForm(forms.Form):
+    zip_code = forms.CharField(label='Your starting zip code', max_length=10,
+                               validators=[validate_zip_code])
+    distance = forms.IntegerField(label='How far would you like to travel on '
+                                        'this adventure?',
+                                  validators=[MinValueValidator(0)])
+    user_filter = forms.ChoiceField(
+        choices=(models.Customer.FILTER_CATEGORY_CHOICES))
+    # second_filter = forms.ChoiceField(
+    #     choices=(models.Customer.FILTER_CATEGORY_CHOICES))
+    # third_filter = forms.ChoiceField(
+    #     choices=(models.Customer.FILTER_CATEGORY_CHOICES))

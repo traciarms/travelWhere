@@ -2,8 +2,55 @@
 {% load bootstrap3 %}
 {% block content %}
 <body>
-        <h3>All the details for {{ city }}:</h3>
-
+        <h3>All the details for {{ city.city }}, {{ city.state }}:</h3>
+        Hotels under $125:
+        <ul>
+            {% for hotel in hotels %}
+                <li>{{ hotel.name }}<br>
+                    {{ hotel.loc_city }}, {{ hotel.state }}<br>
+                    ${{ hotel.low_rate | floatformat:2 }}-
+                    ${{ hotel.high_rate | floatformat:2 }}<br>
+                    {{ hotel.rating }}
+                </li>
+            {% endfor %}
+        </ul>
+        Restaurants with 4.0 rating or higher:
+        <ul>
+            {% for rest in restaurants %}
+                <li>{{ rest.name }}<br>
+                    {{ rest.loc_city }}, {{ rest.state }}<br>
+                    {{ rest.category }}<br>
+                    {{ rest.rating }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+        Outdoor recreation spots:
+        <ul>
+            {% for out in outdoors %}
+                <li>{{ out.name }}<br>
+                    {{ out.loc_city }}, {{ out.state }}<br>
+                    {{ out.description }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+        Events and Concerts:
+        <ul>
+            {% for event in events %}
+                <li>{{ event.title }}<br>
+                    {{ event.loc_city }}, {{ event.state }}<br>
+                    {{ event.description }}<br>
+                </li>
+            {% endfor %}
+        </ul>
+        Nightlife:
+        <ul>
+            {% for night in nights %}
+                <li>{{ night.name }}<br>
+                    {{ night.loc_city }}, {{ night.state }}<br>
+                    {{ night.category }}<br>
+                </li>
+            {% endfor %}
+        </ul>
         <a href="{% url 'index' %}">Return to search page.</a>
 </body>
 {% endblock %}

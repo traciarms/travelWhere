@@ -1,0 +1,36 @@
+/** {*/
+    /*border: solid 1px red;*/
+/*}*/
+
+/** {*/
+    /*box-sizing: border-box;*/
+/*}*/
+
+.title {
+    text-align: center;
+    background: cornflowerblue;
+
+}
+
+.round {
+    clear: both;
+    text-align: center;
+}
+
+.player1score {
+    float: left;
+    padding-left: 20px;
+}
+
+.player2score {
+    float: right;
+    padding-right: 20px;
+}
+
+.vcard-stat-count {
+    display: block;
+    font-size: 35px;
+    font-weight: bold;
+    color: #11557C;
+    line-height: 1;
+}

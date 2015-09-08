@@ -3,6 +3,9 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 # Create your models here.
+from travel.validators import validate_zip_code
+
+
 class TruncatingCharField(models.CharField):
     def get_prep_value(self, value):
         value = super(TruncatingCharField,self).get_prep_value(value)
@@ -30,11 +33,12 @@ class Customer(models.Model):
     address = models.CharField(max_length=100, null=True)
     city = models.CharField(max_length=100, null=True)
     state = models.CharField(max_length=100, null=True)
-    zip_code = models.CharField(max_length=10, null=True)
-    first_filter = models.CharField(max_length=50,
+    zip_code = models.CharField(max_length=10, null=True,
+                                validators=[validate_zip_code])
+    user_filter = models.CharField(max_length=50,
                                     choices=FILTER_CATEGORY_CHOICES,
                                     default=OUT_DOOR_RECREATION,
-                                    verbose_name='First Filter')
+                                    verbose_name='Primary Search Filter')
 
 
     def __str__(self):

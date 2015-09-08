@@ -22,7 +22,14 @@ class Command(BaseCommand):
                 state = location['state']
 
                 if city and state:
-                    self.stdout.write('Get or create for {}, {}'.
+
+                    # city, created = City.objects.get_or_create(city=city, state=state)
+                    try:
+                        City.objects.get(city=city, state=state)
+                        self.stdout.write('We are getting {}, {}'.
                                       format(city, state))
-                    city, created = City.objects.get_or_create(city=city, state=state)
-                    self.stdout.write('Create: {}'.format(created))
+                    except City.DoesNotExist:
+                        obj = City.objects.create(city=city, state=state)
+                        obj.save()
+                        self.stdout.write('We are creating {}, {}'.
+                                      format(city, state))

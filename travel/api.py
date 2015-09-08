@@ -5,8 +5,7 @@ import time
 from travel.models import City, Event, OutdoorRecreation, Restaurant, NightLife, \
     Hotel
 from travelWhere.settings import ZIPCODES_API_KEY, EVENTFUL_API_KEY, \
-    TRAIL_API_KEY, consumer_key, token, consumer_secret, token_secret, \
-    EXPEDIA_API_KEY, EXPEDIA_SECRET, EXPEDIA_CID
+    TRAIL_API_KEY, consumer_key, token, consumer_secret, token_secret
 import us
 
 
@@ -31,34 +30,79 @@ def call_zipcode_api(zipcode, distance):
 
 
 def call_eventful_api(search_city, search_state):
-    response = requests.get('http://api.eventful.com/json/events/search?'\
+
+    all_cities = City.objects.filter(id__gt=400)
+    print(len(all_cities))
+
+    for city in all_cities:
+        response = requests.get('http://api.eventful.com/json/events/search?'\
                             'app_key={}&l={},{}&within={}&c={},{}'.\
-                            format(EVENTFUL_API_KEY, search_city, search_state,
-                                    '30', 'festivals_parades', 'music'))
-    num_events = []
-    events = response.json()
+                            format(EVENTFUL_API_KEY, city.city, city.state,
+                            '30', 'festivals_parades', 'music'))
 
-    if 'total_items' in events.keys():
-        num_events = int(events['total_items'])
+        events = response.json()
 
-        if num_events > 1:
-            for event in events['events']['event']:
-                loc_city = event['city_name']
-                state = event['region_abbr']
+        if 'total_items' in events.keys():
+            num_events = int(events['total_items'])
+
+            if num_events > 1:
+                if 'events' in events.keys():
+                    if events['events'] != None:
+                        for event in events['events']['event']:
+
+                            if type(event) is dict:
+                                if 'city_name' in event.keys():
+                                    loc_city = event['city_name']
+                                if 'region_abbr' in event.keys():
+                                    state = event['region_abbr']
+                                if loc_city and state:
+                                    try:
+                                        city = City.objects.get(city=loc_city, state=state)
+                                    except City.DoesNotExist:
+                                        city = None
+                                    title = event['title']
+                                    eventful_id = event['id']
+                                    address = event['venue_address']
+                                    date = event['start_time']
+                                    description = event['description']
+                                    venue_name = event['venue_name']
+                                    url = event['venue_url']
+
+                                    if city and loc_city and state:
+                                        try:
+                                            Event.objects.get(eventful_id=eventful_id)
+                                        except Event.DoesNotExist:
+                                            obj = Event.objects.create(city=city,
+                                                                    eventful_id=eventful_id,
+                                                                    title=title,
+                                                                    address=address,
+                                                                    loc_city=loc_city,
+                                                                    state=state,
+                                                                    date=date,
+                                                                    description=description,
+                                                                    venue_name=venue_name,
+                                                                    url=url)
+                                            obj.save()
+            elif num_events == 1:
+                loc_city = events['events']['event']['city_name']
+                state = events['events']['event']['region_abbr']
                 try:
                     city = City.objects.get(city=loc_city, state=state)
                 except City.DoesNotExist:
                     city = None
-                title = event['title']
-                eventful_id = event['id']
-                address = event['venue_address']
-                date = event['start_time']
-                description = event['description']
-                venue_name = event['venue_name']
-                url = event['venue_url']
+                title = events['events']['event']['title']
+                eventful_id = events['events']['event']['id']
+                address = events['events']['event']['venue_address']
+                date = events['events']['event']['start_time']
+                description = events['events']['event']['description']
+                venue_name = events['events']['event']['venue_name']
+                url = events['events']['event']['venue_url']
 
                 if city and loc_city and state:
-                    Event.objects.get_or_create(city=city,
+                    try:
+                        Event.objects.get(eventful_id=eventful_id)
+                    except Event.DoesNotExist:
+                        obj = Event.objects.create(city=city,
                                                 eventful_id=eventful_id,
                                                 title=title,
                                                 address=address,
@@ -68,33 +112,7 @@ def call_eventful_api(search_city, search_state):
                                                 description=description,
                                                 venue_name=venue_name,
                                                 url=url)
-        elif num_events == 1:
-            loc_city = events['events']['event']['city_name']
-            state = events['events']['event']['region_abbr']
-            try:
-                city = City.objects.get(city=loc_city, state=state)
-            except City.DoesNotExist:
-                city = None
-            title = events['events']['event']['title']
-            eventful_id = events['events']['event']['id']
-            address = events['events']['event']['venue_address']
-            date = events['events']['event']['start_time']
-            description = events['events']['event']['description']
-            venue_name = events['events']['event']['venue_name']
-            url = events['events']['event']['venue_url']
-
-            if city and loc_city and state:
-                Event.objects.get_or_create(city=city,
-                                            eventful_id=eventful_id,
-                                            title=title,
-                                            address=address,
-                                            loc_city=loc_city,
-                                            state=state,
-                                            date=date,
-                                            description=description,
-                                            venue_name=venue_name,
-                                            url=url)
-
+                        obj.save()
     return num_events
 
 
@@ -156,7 +174,7 @@ def call_food_api(search_city, search_state):
 
     response = session.get('http://api.yelp.com/v2/search',
                            params={'term': 'food',
-                                'location': search_city+', '+'search_state'})
+                                'location': search_city+', '+search_state})
 
     yelp = response.json()
     high_rating_count = 0
@@ -332,94 +350,94 @@ def call_nightlife_api(search_city, search_state):
     return num_night_life
 
 
-def call_expedia_api(city, state):
-    signature = hashlib.md5((EXPEDIA_API_KEY+EXPEDIA_SECRET+
-                             str(int(time.time()))).encode("utf")).hexdigest()
-    headers = { 'cid' : EXPEDIA_CID,
-                'apiKey': EXPEDIA_API_KEY,
-                'sig': signature,
-                'city': city,
-                'stateProvinceCode': state,
-                'countryCode': 'US',
-                'sort': 'PRICE'}
-    response = requests.get('http://api.ean.com/ean-services/rs/hotel/v3/list?',
-                            headers)
-
-    hotels = response.json()
-    num_hotels = 0
-
-    if 'error' not in hotels.keys():
-        if 'HotelList' in hotels['HotelListResponse'].keys():
-            num_hotels = int(hotels['HotelListResponse']['HotelList']\
-                                 ['@activePropertyCount'])
-            hotel_list = hotels['HotelListResponse']['HotelList']\
-                ['HotelSummary']
-
-            if num_hotels > 1:
-               for hotel in hotel_list:
-                    loc_city = hotel['city']
-                    state = hotel['stateProvinceCode']
-                    if loc_city and state:
-                        try:
-                            if len(state) == 2:
-                                city, created = \
-                                    City.objects.get_or_create(city=loc_city,
-                                                               state=state)
-                            else:
-                                city = City.objects.get(city=loc_city,
-                                                        state=state)
-                        except City.DoesNotExist:
-                            city = None
-
-                    name = hotel['name']
-                    hotel_id = hotel['hotelId']
-                    address = hotel['address1']
-                    low_rate = hotel['lowRate']
-                    high_rate = hotel['highRate']
-                    rating = hotel['hotelRating']
-                    url = hotel['thumbNailUrl']
-
-                    if city:
-                        try:
-                            Hotel.objects.get_or_create(hotel_id=hotel_id)
-                        except Hotel.DoesNotExist:
-                            obj = Hotel.objects.get_or_create(city=city,
-                                                        hotel_id=hotel_id,
-                                                        name=name,
-                                                        address=address,
-                                                        loc_city=loc_city,
-                                                        state=state,
-                                                        high_rate=high_rate,
-                                                        low_rate=low_rate,
-                                                        rating=rating,
-                                                        url=url)
-                            obj.save()
-            else:
-                name = hotel_list['name']
-                hotel_id = hotel_list['hotelId']
-                address = hotel_list['address1']
-                loc_city = hotel_list['city']
-                state = hotel_list['stateProvinceCode']
-                low_rate = hotel_list['lowRate']
-                high_rate = hotel_list['highRate']
-                rating = hotel_list['hotelRating']
-                url = hotel_list['thumbNailUrl']
-
-                if city:
-                    try:
-                        Hotel.objects.get_or_create(hotel_id=hotel_id)
-                    except Hotel.DoesNotExist:
-                        obj = Hotel.objects.get_or_create(city=city,
-                                                    hotel_id=hotel_id,
-                                                    name=name,
-                                                    address=address,
-                                                    loc_city=loc_city,
-                                                    state=state,
-                                                    high_rate=high_rate,
-                                                    low_rate=low_rate,
-                                                    rating=rating,
-                                                    url=url)
-                        obj.save()
-
-    return num_hotels
+# def call_expedia_api(city, state):
+#     signature = hashlib.md5((EXPEDIA_API_KEY+EXPEDIA_SECRET+
+#                              str(int(time.time()))).encode("utf")).hexdigest()
+#     headers = { 'cid' : EXPEDIA_CID,
+#                 'apiKey': EXPEDIA_API_KEY,
+#                 'sig': signature,
+#                 'city': city,
+#                 'stateProvinceCode': state,
+#                 'countryCode': 'US',
+#                 'sort': 'PRICE'}
+#     response = requests.get('http://api.ean.com/ean-services/rs/hotel/v3/list?',
+#                             headers)
+#
+#     hotels = response.json()
+#     num_hotels = 0
+#
+#     if 'error' not in hotels.keys():
+#         if 'HotelList' in hotels['HotelListResponse'].keys():
+#             num_hotels = int(hotels['HotelListResponse']['HotelList']\
+#                                  ['@activePropertyCount'])
+#             hotel_list = hotels['HotelListResponse']['HotelList']\
+#                 ['HotelSummary']
+#
+#             if num_hotels > 1:
+#                for hotel in hotel_list:
+#                     loc_city = hotel['city']
+#                     state = hotel['stateProvinceCode']
+#                     if loc_city and state:
+#                         try:
+#                             if len(state) == 2:
+#                                 city, created = \
+#                                     City.objects.get_or_create(city=loc_city,
+#                                                                state=state)
+#                             else:
+#                                 city = City.objects.get(city=loc_city,
+#                                                         state=state)
+#                         except City.DoesNotExist:
+#                             city = None
+#
+#                     name = hotel['name']
+#                     hotel_id = hotel['hotelId']
+#                     address = hotel['address1']
+#                     low_rate = hotel['lowRate']
+#                     high_rate = hotel['highRate']
+#                     rating = hotel['hotelRating']
+#                     url = hotel['thumbNailUrl']
+#
+#                     if city:
+#                         try:
+#                             Hotel.objects.get_or_create(hotel_id=hotel_id)
+#                         except Hotel.DoesNotExist:
+#                             obj = Hotel.objects.get_or_create(city=city,
+#                                                         hotel_id=hotel_id,
+#                                                         name=name,
+#                                                         address=address,
+#                                                         loc_city=loc_city,
+#                                                         state=state,
+#                                                         high_rate=high_rate,
+#                                                         low_rate=low_rate,
+#                                                         rating=rating,
+#                                                         url=url)
+#                             obj.save()
+#             else:
+#                 name = hotel_list['name']
+#                 hotel_id = hotel_list['hotelId']
+#                 address = hotel_list['address1']
+#                 loc_city = hotel_list['city']
+#                 state = hotel_list['stateProvinceCode']
+#                 low_rate = hotel_list['lowRate']
+#                 high_rate = hotel_list['highRate']
+#                 rating = hotel_list['hotelRating']
+#                 url = hotel_list['thumbNailUrl']
+#
+#                 if city:
+#                     try:
+#                         Hotel.objects.get_or_create(hotel_id=hotel_id)
+#                     except Hotel.DoesNotExist:
+#                         obj = Hotel.objects.get_or_create(city=city,
+#                                                     hotel_id=hotel_id,
+#                                                     name=name,
+#                                                     address=address,
+#                                                     loc_city=loc_city,
+#                                                     state=state,
+#                                                     high_rate=high_rate,
+#                                                     low_rate=low_rate,
+#                                                     rating=rating,
+#                                                     url=url)
+#                         obj.save()
+#
+#     return num_hotels
 

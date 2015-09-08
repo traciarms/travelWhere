@@ -1,14 +1,13 @@
-from django.contrib.auth import authenticate
-from django.contrib.auth.views import login
+from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from travel.api import call_zipcode_api
 from travel.forms import InitSearchForm, CustomerCreationForm, \
-    LoggedInSearchForm
-from travel.models import Customer, City, Restaurant, OutdoorRecreation, Hotel, \
-    Event, NightLife
+    LoggedInSearchForm, CustomerProfile
+from travel.models import Customer, City
 
 # Create your views here.
 from travel.utils import apply_default_filters, apply_user_filter, \
@@ -27,12 +26,19 @@ def create_user(request):
             customer.city = data['city']
             customer.state = data['state']
             customer.zip_code = data['zip_code']
+            customer.user_filter = data['user_filter']
             customer.save()
             user = authenticate(username=request.POST['username'],
                                 password=request.POST['password1'])
-            login(request, user)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
 
-            return HttpResponseRedirect(reverse('index'))
+            if request.user.is_authenticated():
+                return HttpResponseRedirect(reverse('profile',
+                                                     args=[user.customer.id]))
+            else:
+                return HttpResponseRedirect(reverse('index'))
     else:
         form = CustomerCreationForm()
 
@@ -48,19 +54,69 @@ class CityDetail(DetailView):
         city = self.object
         context = super(CityDetail, self).get_context_data(**kwargs)
         city = City.objects.get(pk=city.id)
-        context['restaurants'] = city.restaurant_set.all()
-        context['outdoors'] = city.outdoorrecreation_set.all()
-        context['hotels'] = city.hotel_set.all()
-        context['events'] = city.event_set.all()
-        context['nights'] = city.nightlife_set.all()
+        context['restaurants4'] = len(city.restaurant_set.filter(rating=4.0))
+        context['restaurants4_5'] = len(city.restaurant_set.filter(rating=4.5))
+        context['restaurants5'] = len(city.restaurant_set.filter(rating=5.0))
+
+        context['outdoors_trails'] = \
+            len(city.outdoorrecreation_set.filter(name__icontains='trail'))
+        context['outdoors_mountain_resorts'] = \
+            len(city.outdoorrecreation_set.filter(name__icontains='mountain resort'))
+        context['outdoors_campground'] = \
+            len(city.outdoorrecreation_set.filter(name__icontains='campground'))
+        context['outdoors_state_park'] = \
+            len(city.outdoorrecreation_set.filter(name__icontains='state park'))
+        context['outdoors_peak'] = \
+            len(city.outdoorrecreation_set.filter(Q(name__icontains='peak') |
+                                                  Q(name__icontains='lookout')))
+        context['outdoors_lake'] = \
+            len(city.outdoorrecreation_set.filter(name__icontains='lake'))
+
+        context['hotels_lt50'] = len(city.hotel_set.filter(high_rate__lt=50))
+        context['hotels_50_100'] = len(city.hotel_set.filter(low_rate__gt=50,
+                                                             high_rate__lt=100))
+        context['hotels100_125'] = len(city.hotel_set.filter(low_rate__gt=100,
+                                                             high_rate__lt=125))
+
+        context['events_festivals'] = \
+            len(city.event_set.filter(title__icontains='fest'))
+        context['events_music'] = \
+            len(city.event_set.exclude(title__icontains='fest'))
+
+        context['nights_pub'] = \
+            len(city.nightlife_set.filter(category__icontains='pub'))
+        context['nights_bar'] = \
+            len(city.nightlife_set.filter(category__icontains='bar'))
+        context['nights_sports_bar'] = \
+            len(city.nightlife_set.filter(category__icontains='sports bar'))
+        context['nights_music_venues'] = \
+            len(city.nightlife_set.filter(category__icontains='music venue'))
+        context['nights_night_club'] = \
+            len(city.nightlife_set.filter(category__icontains='night club'))
         return context
+
+
+class UserProfile(UpdateView):
+    model = Customer
+    form_class = CustomerProfile
+    pk_url_kwarg = 'customer_id'
+    template_name = 'profile.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('index')
+
 
 
 def location_search(request):
 
     if request.method == 'GET':
         if request.user.is_authenticated():
-            form = LoggedInSearchForm()
+            form = LoggedInSearchForm(
+                initial={'zip_code': request.user.customer.zip_code,
+                         'user_filter': request.user.customer.user_filter})
         else:
             form = InitSearchForm()
         context = {'form': form}

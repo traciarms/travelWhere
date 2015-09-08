@@ -1,6 +1,7 @@
 from travel.api import call_trails_api, call_eventful_api, call_food_api, \
-    call_expedia_api, call_nightlife_api
-from travel.models import City
+    call_nightlife_api
+from travel.hotel_api import call_hotel_api, get_total_num
+from travel.models import City, OutdoorRecreation
 
 
 def reduce_location_list(distance, location_list):
@@ -22,12 +23,17 @@ def reduce_location_list(distance, location_list):
 def apply_default_filters(city, state, dist):
     city_tuple = ()
 
-    num_trails = call_trails_api(city, state)
+    # num_trails = call_trails_api(city, state)
+    city_obj = City.objects.get(city=city, state=state)
+    num_trails = len(city_obj.outdoorrecreation_set.all())
+
     if num_trails != 0:
-        num_events = call_eventful_api(city, state)
+        # num_events = call_eventful_api(city, state)
+        num_events = len(city_obj.event_set.all())
 
         # if num_events != 0:
-        num_rests = call_food_api(city, state)
+        # num_rests = call_food_api(city, state)
+        num_rests = len(city_obj.restaurant_set.all())
 
             # if num_rests != 0:
         city_tuple = (city, state, dist, num_trails, num_events,
@@ -37,44 +43,67 @@ def apply_default_filters(city, state, dist):
 
 
 def apply_user_filter(filter, city, state, dist):
+    # calls = {"Hotel Price": call_hotel_api}
+    #
+    # if filter in calls:
+    #     items = calls[filter](city, state)
+
+    city_obj = City.objects.get(city=city, state=state)
 
     if filter == 'Hotel Price':
-        num_hotels = call_expedia_api(city, state)
+        # hotels = call_hotel_api(city, state)
+        # num_hotels = get_total_num(hotels)
+        num_hotels = len(city_obj.hotel_set.all())
+
         if num_hotels > 0:
-            num_trails = call_trails_api(city, state)
-            num_events = call_eventful_api(city, state)
+            # num_trails = call_trails_api(city, state)
+            # num_events = call_eventful_api(city, state)
+            num_trails = len(city_obj.outdoorrecreation_set.all())
+            num_events = len(city_obj.event_set.all())
             return (city, state, dist, num_hotels, num_trails, num_events)
         else:
             return ()
     elif filter == 'Restaurant Rating':
-        num_rests = call_food_api(city, state)
+        # num_rests = call_food_api(city, state)
+        num_rests = len(city_obj.restaurant_set.all())
         if num_rests > 0:
-            num_trails = call_trails_api(city, state)
-            num_events = call_eventful_api(city, state)
+            # num_trails = call_trails_api(city, state)
+            # num_events = call_eventful_api(city, state)
+            num_trails = len(city_obj.outdoorrecreation_set.all())
+            num_events = len(city_obj.event_set.all())
             return (city, state, dist, num_rests, num_trails, num_events)
         else:
             return ()
     elif filter == 'Events/Concerts':
-        num_events = call_eventful_api(city, state)
+        # num_events = call_eventful_api(city, state)
+        num_events = len(city_obj.event_set.all())
         if num_events > 0:
-            num_trails = call_trails_api(city, state)
-            num_rests = call_food_api(city, state)
+            # num_trails = call_trails_api(city, state)
+            # num_rests = call_food_api(city, state)
+            num_trails = len(city_obj.outdoorrecreation_set.all())
+            num_rests = len(city_obj.restaurant_set.all())
             return (city, state, dist, num_events, num_trails, num_rests)
         else:
             return ()
     elif filter == 'Night Life':
-        num_clubs = call_nightlife_api(city, state)
+        # num_clubs = call_nightlife_api(city, state)
+        num_clubs = len(city_obj.nightlife_set.all())
         if num_clubs > 0:
-            num_trails = call_trails_api(city, state)
-            num_events = call_eventful_api(city, state)
+            # num_trails = call_trails_api(city, state)
+            # num_events = call_eventful_api(city, state)
+            num_trails = len(city_obj.outdoorrecreation_set.all())
+            num_events = len(city_obj.event_set.all())
             return (city, state, dist, num_clubs, num_trails, num_events)
         else:
             return ()
     else:
-        num_trails = call_trails_api(city, state)
+        # num_trails = call_trails_api(city, state)
+        num_trails = len(city_obj.outdoorrecreation_set.all())
         if num_trails > 0:
-            num_events = call_eventful_api(city, state)
-            num_rests = call_food_api(city, state)
+            # num_events = call_eventful_api(city, state)
+            # num_rests = call_food_api(city, state)
+            num_events = len(city_obj.event_set.all())
+            num_rests = len(city_obj.restaurant_set.all())
             return (city, state, dist, num_trails, num_events, num_rests)
         else:
             return ()

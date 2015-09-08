@@ -32,8 +32,18 @@
             </a>
         {% else %}
             <br>
-            <input type="submit" value='Find Destinations' class="btn btn-danger">
+            <input type="submit" value='Find Destinations'
+                   class="btn btn-danger"><br><br>
+
+            <a href="{% url 'profile' user.customer.id %}" class="btn btn-danger">
+                 Go to profile
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-danger">
+                 Logout
+            </a>
         {% endif %}
+
+
 
     </form>
 

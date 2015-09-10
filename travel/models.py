@@ -48,8 +48,8 @@ class Customer(models.Model):
 
 
 class City(models.Model):
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=5)
+    city = models.CharField(max_length=100, db_index=True)
+    state = models.CharField(max_length=5, db_index=True)
 
 
 class Hotel(models.Model):

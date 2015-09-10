@@ -1,50 +1,211 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load bootstrap3 %}
+﻿{% extends "base.html" %}
+{% load staticfiles %}
 {% block content %}
-    <head>
-        <link rel="stylesheet" href="{% static "site-style.css" %}"/>
-            <link rel="stylesheet"
-              href="{% static 'bootstrap/css/bootstrap.css' %}">
-        <meta charset="UTF-8">
-        <title>Travel WHERE</title>
-    </head>
-    <br>
-    <br>
-    <form action="{% url 'index' %}" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            {{ field.label_tag }} {{ field }}<br>
-            {{ field.errors }}
-        {% endfor %}
+<!--<!DOCTYPE html>-->
+<!--[if IE 7 ]> <html class="ie ie7"> <![endif]-->
+<!--[if IE 8 ]> <html class="ie ie8"> <![endif]-->
+<!--[if IE 9 ]> <html class="ie ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
 
-        {% if not user.is_authenticated %}
-            <input type="submit" value='Find Destinations' class="btn btn-danger"><br>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="tb-cell">
+            <div id="page-loading">
+                <div></div>
+                <p>Loading</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Wrap -->
+    <div id="wrap">
+        <!-- Header -->
+        <header id="header" class="header">
+            <div class="container">
+                
+                <!-- Logo -->
+                <div class="logo float-left">
+                    <a href="{% static "index.html" %}" title="">
+                    <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt=""></a>
+                </div>
+                <!-- End Logo -->
+                <!-- Bars -->
+                <div class="bars" id="bars"></div>
+                <!-- End Bars -->
 
-            If you would like to customize the city ranking please
-            <a href="{% url 'registration' %}" class="btn btn-danger">
-                 Register now<br>
-            </a>
-            <br>
-            Or if you already have an account
-            <a href="{% url 'login' %}" class="btn btn-danger">
-                 Login<br>
-            </a>
-        {% else %}
-            <br>
-            <input type="submit" value='Find Destinations'
-                   class="btn btn-danger"><br><br>
+                <!--Navigation-->
+                <nav class="navigation nav-c" id="navigation" data-menu-type="1200">
+                    <div class="nav-inner">
+                        <a href="#" class="bars-close" id="bars-close">Close</a>
+                        <div class="tb">
+                            <div class="tb-cell">
+                                <ul class="menu-list text-uppercase">
+                                    <li class="current-menu-parent">
+                                        <a href="{% url "index" %}" title="">Search</a>
+                                    </li>
+                                    {% if not user.is_authenticated %}
+                                        <li>
+                                            <a href="{% url 'login' %}">Login</a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="{% url 'profile' user.customer.id %}" title="">Profile</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'logout' %}" title="">Logout</a>
+                                        </li>
+                                    {% endif %}
 
-            <a href="{% url 'profile' user.customer.id %}" class="btn btn-danger">
-                 Go to profile
-            </a>
-            <a href="{% url 'logout' %}" class="btn btn-danger">
-                 Logout
-            </a>
-        {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!--End Navigation-->
+            </div>
+        </header>
+        <!-- End Header -->
+
+        
+        <!--Banner-->
+        <section class="banner">
+
+            <!--Background-->
+            <div class="bg-parallax bg-1"></div>
+            <!--End Background-->
+
+            <div class="container">
+
+                <div class="logo-banner text-center">
+                    <a href="" title="">
+                        <img src="{% static "images/logo-banner.png" %}" alt="">
+                    </a>
+                </div>
+
+                <!-- Banner Content -->
+                <div class="banner-cn">
+
+                    <br><br><br><br><br><br>
+
+                    <!-- Tabs Content -->
+                    <div class="tab-content">
+
+                        <!-- Search Location -->
+
+                            <div class="form-cn form-hotel tab-pane active in" id="form-hotel">
+                                <h2>Start your wanderlust search here:</h2>
+                                <div class="form-search clearfix">
+                                    <form action="{% url 'index' %}" method="post">
+{#                                        {% for field in form %}#}
+                                            {% csrf_token %}
+                                            <div class="form-field field-destination">
+                                                {{ form.zip_code.errors }}
+                                                <label for="{{ form.zip_code.id_for_label }}">
+                                                    <span>Where are you starting:</span> your zip code here</label>
+                                                    {{ form.zip_code }}
+                                            </div>
+                                            <div class="form-field field-distance">
+                                                {{ form.distance.errors }}
+                                                <label for="{{ form.distance.id_for_label }}">
+                                                    <span>How far would you like to go?</span> in miles</label>
+                                                    {{ form.distance }}
+                                            </div>
+                                            <div class="form-field field-filter">
+                                                {{ form.user_filter.errors }}
+                                                <label for="{{ form.user_filter.id_for_label }}">
+                                                    <span>Your chosen search filter?</span></label>
+                                                    {{ form.user_filter }}
+                                            </div>
+{#                                        {% endfor %}#}
+                                       <!--     <label for="destination"><span>Where are you starting:</span> your zip code here</label>
+                                            <input type="text" id="destination" class="field-input">
+                                        </div>
+                                        <div class="form-field field-distance">
+                                            <label for="distance"><span>How far would you like to go?</span> in miles</label>
+                                            <input type="text" id="distance" class="field-input" >
+                                        </div>
+                                        <div class="form-field field-filter">
+                                            <label for="filter"><span>Your chosen search filter?</span></label>
+                                            <input type="" id="filter" class="field-input" >
+                                        </div>-->
+                                            <div class="form-submit">
+                                                <button type="submit" class="awe-btn awe-btn-lager awe-search">Search</button>
+                                            </div>
+                                    </form>
+                                </div>
+                            </div>
+                        <!-- End Search Location -->
+                    </div>
+                    <!-- End Tabs Content -->
+                </div>
+                <!-- End Banner Content -->
+            </div>
+        </section>
+        <!--End Banner-->
 
 
+        <!-- Travel Magazine -->
+        <section class="magazine">
+            <!-- Title -->
+            <div class="title-wrap">
+                <div class="container">
+                    <div class="travel-title float-left">
+                    </div>
+                </div>
+            </div>
+            <!-- End Title -->
+        </section>
+        <!-- End Travel Magazine -->
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <!-- Logo -->
+                    <div class="col-md-4">
+                        <div class="logo-foter">
+                            <a href="{% url "index" %}" title="">
+                                <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt=""></a>
+                        </div>
+                    </div>
+                    <!-- End Logo -->
+                    <!-- Navigation Footer -->
+                    <div class="col-xs-6 col-sm-3 col-md-2">
+                        <div class="ul-ft">
 
-    </form>
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Navigation Footer -->
+                    <div class="col-xs-6 col-sm-3 col-md-2">
+                        <div class="ul-ft">
 
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Footer Currency, Language -->
+                    <div class="col-sm-6 col-md-4">
+                    </div>
+                    <!-- End Footer Currency, Language -->
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+    </div>
+    
+    <!-- Library JS -->
+    <script type="text/javascript" src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/owl.carousel.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/parallax.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.nicescroll.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.ui.touch-punch.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/SmoothScroll.js" %}"></script>
+    <!-- End Library JS -->
+    <!-- Main Js -->
+    <script type="text/javascript" src="{% static "js/script.js" %}"></script>
+    <!-- End Main Js -->
+<!--</body>-->
 {% endblock %}

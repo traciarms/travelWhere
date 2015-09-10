@@ -1,9 +1,7 @@
-import hashlib
 import rauth
 import requests
-import time
-from travel.models import City, Event, OutdoorRecreation, Restaurant, NightLife, \
-    Hotel
+from travel.models import City, Event, OutdoorRecreation, \
+    Restaurant, NightLife
 from travelWhere.settings import ZIPCODES_API_KEY, EVENTFUL_API_KEY, \
     TRAIL_API_KEY, consumer_key, token, consumer_secret, token_secret
 import us
@@ -19,12 +17,13 @@ def call_zipcode_api(zipcode, distance):
 
     if 'zip_codes' in locations.keys():
         location_list = locations['zip_codes']
-        for location in location_list:
-            city = location['city']
-            state = location['state']
 
-            if city and state:
-                city = City.objects.get_or_create(city=city, state=state)
+        # for location in location_list:
+        #     city = location['city']
+        #     state = location['state']
+
+            # if city and state:
+            #     city = City.objects.get_or_create(city=city, state=state)
 
     return location_list
 

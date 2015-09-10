@@ -10,8 +10,8 @@ from travel.forms import InitSearchForm, CustomerCreationForm, \
 from travel.models import Customer, City
 
 # Create your views here.
-from travel.utils import apply_default_filters, apply_user_filter, \
-    build_filter_dict, reduce_location_list
+from travel.utils import apply_user_filter, build_filter_dict, \
+    reduce_location_list
 
 
 def create_user(request):
@@ -109,14 +109,14 @@ class UserProfile(UpdateView):
         return reverse('index')
 
 
-
 def location_search(request):
 
     if request.method == 'GET':
         if request.user.is_authenticated():
-            form = LoggedInSearchForm(
-                initial={'zip_code': request.user.customer.zip_code,
-                         'user_filter': request.user.customer.user_filter})
+            # form = LoggedInSearchForm(
+            #     initial={'zip_code': request.user.customer.zip_code,
+            #              'user_filter': request.user.customer.user_filter})
+            form = LoggedInSearchForm()
         else:
             form = InitSearchForm()
         context = {'form': form}
@@ -124,7 +124,6 @@ def location_search(request):
         return render(request, 'index.html', context)
 
     if request.method == 'POST':
-        city_event_list = []
         if request.user.is_authenticated():
             form = LoggedInSearchForm(request.POST)
         else:
@@ -137,9 +136,9 @@ def location_search(request):
 
             if request.user.is_authenticated():
                 user_filter = data['user_filter']
-
                 filter = True
             else:
+                user_filter = 'None'
                 filter = False
 
             location_list = call_zipcode_api(zipcode, distance)
@@ -147,42 +146,30 @@ def location_search(request):
             city_list = reduce_location_list(distance, location_list)
             city_dict_list = []
 
-            for city, state, dist in city_list:
-                if filter:
-                    ret_tuple = apply_user_filter(user_filter,city,
-                                                    state, dist)
-                    if len(ret_tuple) > 0:
-                        city_event_list.append(ret_tuple)
-                else:
-                    ret_tuple = apply_default_filters(city, state, dist)
-                    if len(ret_tuple) > 0:
-                        city_event_list.append(ret_tuple)
+            city_event_list = apply_user_filter(user_filter, city_list)
 
-            city_event_list.sort(key=lambda x: x[3], reverse=True)
-            city_event_list = city_event_list[:5]
-
-            if not filter:
-
-                for city, state, dist, trail, event, rest in city_event_list:
-                    city = City.objects.get(city=city, state=state)
-                    city_dict = {'city': city,
-                                 'dist': dist,
-                                 'Stats':
-                                     [{'Label': 'Number of Outdoor Recreation '
-                                        'activities',
-                                        'number': trail},
-                                      {'Label': 'Number of Events such as '
-                                        'concerts or festivals',
-                                        'number': event},
-                                      {'Label': 'Number of Top rated '
-                                        'restaurants (rated 4.0 or '
-                                        'higher)',
-                                        'number': rest}]
-                                }
-                    city_dict_list.append(city_dict)
-            else:
-                city_dict_list = build_filter_dict(user_filter,
-                                                   city_event_list)
+            # if not filter:
+            #
+            #     # for city, state, dist, trail, event, rest in city_event_list:
+            #     for trail, event, rest, city, state in city_event_list:
+            #         city = City.objects.get(city=city, state=state)
+            #         city_dict = {'city': city,
+            #                      # 'dist': dist,
+            #                      'Stats':
+            #                          [{'Label': 'Number of Outdoor Recreation '
+            #                             'activities',
+            #                             'number': trail},
+            #                           {'Label': 'Number of Events such as '
+            #                             'concerts or festivals',
+            #                             'number': event},
+            #                           {'Label': 'Number of Top rated '
+            #                             'restaurants (rated 4.0 or '
+            #                             'higher)',
+            #                             'number': rest}]
+            #                     }
+            #         city_dict_list.append(city_dict)
+            # else:
+            city_dict_list = build_filter_dict(user_filter, city_event_list)
 
             context = {'city_dict': city_dict_list,
                        'filter': filter}

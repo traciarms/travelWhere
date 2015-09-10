@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+<body>
+        <h3>All the details for {{ city.city }}, {{ city.state }}:</h3>
+                <a href="{% url 'index' %}">Return to search page.</a><br>
+        Hotels:
+        <ul>
+{#            {% for hotel in hotels %}#}
+                <li>Number of hotels with rates less than $50:
+                        <strong class="vcard-stat-count">{{ hotels_lt50 }}</strong><br>
+                    Number of hotels with rates between $50 and $100:
+                        <strong class="vcard-stat-count">{{ hotels_50_100 }}</strong><br>
+                    Number of hotels with rates between $100 and $125:
+                        <strong class="vcard-stat-count">{{ hotels100_125 }}</strong><br>
+                </li>
+{#            {% endfor %}#}
+        </ul>
+        Restaurants:
+        <ul>
+{#            {% for rest in restaurants %}#}
+                <li>Number of Restaurants with 5.0 Yelp rating:
+                    <strong class="vcard-stat-count"> {{ restaurants5 }}</strong><br>
+                        Number of Restaurants with 4.5 Yelp rating:
+                    <strong class="vcard-stat-count">{{ restaurants4_5 }}</strong><br>
+                        Number of Restaurants with 4.0 Yelp rating:
+                    <strong class="vcard-stat-count">{{ restaurants4 }}</strong><br>
+                </li>
+{#            {% endfor %}#}
+        </ul>
+        Outdoor recreation spots:
+        <ul>
+{#            {% for out in outdoors %}#}
+                 <li>    Number of Trails:
+                    <strong class="vcard-stat-count"> {{ outdoors_trails }}</strong><br>
+                        Number of Campgrounds:
+                    <strong class="vcard-stat-count">{{ outdoors_campground }}</strong><br>
+                        Number of Lakes:
+                    <strong class="vcard-stat-count"> {{ outdoors_lake }}</strong><br>
+                        Number of Mountain Resorts:
+                    <strong class="vcard-stat-count">{{ outdoors_mountain_resorts }}</strong><br>
+                        Number of Peaks/Lookout:
+                    <strong class="vcard-stat-count"> {{ outdoors_peak }}</strong><br>
+                        Number of State Parks:
+                    <strong class="vcard-stat-count">{{ outdoors_state_park }}</strong><br>
+                </li>
+{#            {% endfor %}#}
+        </ul>
+        Events and Concerts:
+        <ul>
+{#            {% for event in events %}#}
+                <li>    Number of Festivals:
+                    <strong class="vcard-stat-count"> {{ events_festivals }}</strong><br>
+                        Number of Concerts:
+                    <strong class="vcard-stat-count">{{ events_music }}</strong><br>
+                </li>
+{#            {% endfor %}#}
+        </ul>
+        Nightlife:
+        <ul>
+{#            {% for night in nights %}#}
+                <li>    Number of Pubs:
+                    <strong class="vcard-stat-count"> {{ nights_pub }}</strong><br>
+                        Number of Bars:
+                    <strong class="vcard-stat-count">{{ nights_bar }}</strong><br>
+                        Number of Sports Bars:
+                    <strong class="vcard-stat-count">{{ nights_sports_bar }}</strong><br>
+                        Number of Music Venues:
+                    <strong class="vcard-stat-count"> {{ nights_music_venues }}</strong><br>
+                        Number of Night Clubs:
+                    <strong class="vcard-stat-count">{{ nights_night_club }}</strong><br>
+
+                </li>
+{#            {% endfor %}#}
+        </ul>
+
+</body>
+{% endblock %}

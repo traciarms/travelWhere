@@ -30,22 +30,23 @@ class CustomerProfile(ModelForm):
 
 
 class InitSearchForm(forms.Form):
-    zip_code = forms.CharField(label='Your starting zip code', max_length=10,
-                               validators=[validate_zip_code])
-    distance = forms.IntegerField(label='How far would you like to travel on '
-                                        'this adventure?',
-                                  validators=[MinValueValidator(0)])
+    zip_code = forms.CharField(validators=[validate_zip_code],
+                               widget=forms.TextInput(
+                                   attrs={'class':'field-input'}))
+    distance = forms.IntegerField(validators=[MinValueValidator(0)],
+                                  widget=forms.TextInput(
+                                      attrs={'class':'field-input'}))
 
 
 class LoggedInSearchForm(forms.Form):
-    zip_code = forms.CharField(label='Your starting zip code', max_length=10,
-                               validators=[validate_zip_code])
-    distance = forms.IntegerField(label='How far would you like to travel on '
-                                        'this adventure?',
-                                  validators=[MinValueValidator(0)])
+    zip_code = forms.CharField(max_length=10,
+                               validators=[validate_zip_code],
+                               widget=forms.TextInput(
+                                   attrs={'class':'field-input'}))
+
+    distance = forms.IntegerField(validators=[MinValueValidator(0)],
+                                  widget=forms.TextInput(
+                                      attrs={'class':'field-input'}))
     user_filter = forms.ChoiceField(
-        choices=(models.Customer.FILTER_CATEGORY_CHOICES))
-    # second_filter = forms.ChoiceField(
-    #     choices=(models.Customer.FILTER_CATEGORY_CHOICES))
-    # third_filter = forms.ChoiceField(
-    #     choices=(models.Customer.FILTER_CATEGORY_CHOICES))
+        choices=(models.Customer.FILTER_CATEGORY_CHOICES),
+        widget=forms.Select(attrs={'class': 'field-input'}))

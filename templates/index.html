@@ -47,6 +47,10 @@
                                         <li>
                                             <a href="{% url 'login' %}">Login</a>
                                         </li>
+                                        <li>
+                                            <a href="{% url 'registration' %}">Register</a>
+                                        </li>
+
                                     {% else %}
                                         <li>
                                             <a href="{% url 'profile' user.customer.id %}" title="">Profile</a>
@@ -96,7 +100,7 @@
                                 <h2>Start your wanderlust search here:</h2>
                                 <div class="form-search clearfix">
                                     <form action="{% url 'index' %}" method="post">
-{#                                        {% for field in form %}#}
+
                                             {% csrf_token %}
                                             <div class="form-field field-destination">
                                                 {{ form.zip_code.errors }}
@@ -113,7 +117,7 @@
                                             <div class="form-field field-filter">
                                                 {{ form.user_filter.errors }}
                                                 <label for="{{ form.user_filter.id_for_label }}">
-                                                    <span>Your chosen search filter?</span></label>
+                                                    </label>
                                                     {{ form.user_filter }}
                                             </div>
 {#                                        {% endfor %}#}

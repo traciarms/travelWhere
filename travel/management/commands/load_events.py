@@ -8,11 +8,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         api_call = 0
-        all_cities = City.objects.filter(id__gt=15081)
+        all_cities = City.objects.filter(id__gt=16780)
         print(len(all_cities))
         prev_city_id = 0
 
         for city in all_cities:
+            print('the city_id is {} and the prev_city_id is {}'.
+                  format(city.id, prev_city_id))
             if city.id != prev_city_id:
                 response = requests.get('http://api.eventful.com/json/events/search?'\
                                     'app_key={}&l={},{}&within={}&c={},{}'.\

@@ -1,20 +1,166 @@
-{% extends 'base.html' %}
-{% load bootstrap3 %}
+{% extends "base.html" %}
+{% load staticfiles %}
 {% block content %}
+<!--<!DOCTYPE html>-->
+<!--[if IE 7 ]> <html class="ie ie7"> <![endif]-->
+<!--[if IE 8 ]> <html class="ie ie8"> <![endif]-->
+<!--[if IE 9 ]> <html class="ie ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
 
-    <h3>Please Login</h3>
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-
-        <input type="hidden" name="next" value="{{ next }}">
-        <input type="hidden" name="customer_id" value="{{ user.id }}">
-
-        {% bootstrap_form form layout='inline'%}
-
-        <input type="submit" value="Login">
-
-    </form>
-    <div style="text-align: center">
-        <a href="{% url 'password_reset' %}">forgot password?</a>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="tb-cell">
+            <div id="page-loading">
+                <div></div>
+                <p>Loading</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Wrap -->
+    <div id="wrap"> 
+        <!-- Header -->
+        <header id="header" class="header">
+            <div class="container">
+                <!-- Logo -->
+                <div class="logo float-left">
+                    <a href="{% url "index" %}" title="">
+                    <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt=""></a>
+                </div>
+                <!-- End Logo -->
+                <!-- Bars -->
+                <div class="bars" id="bars"></div>
+                <!-- End Bars -->
+
+                <!--Navigation-->
+                <nav class="navigation nav-c" id="navigation" data-menu-type="1200">
+                    <div class="nav-inner">
+                        <a href="#" class="bars-close" id="bars-close">Close</a>
+                        <div class="tb">
+                            <div class="tb-cell">
+                                <ul class="menu-list text-uppercase">
+
+                                    <li>
+                                        <a href="{% url "index" %}" title="">Search</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'logout' %}" title="">Logout</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <!--End Navigation-->
+            </div>
+        </header>
+        <!-- End Header -->
+
+         <!--Banner-->
+        <section class="sub-banner2">
+            <!--Background-->
+            <div class="bg-parallax bg-5"></div>
+            <!--End Background-->
+            <!-- Logo -->
+            <div class="logo-banner text-center">
+{#                    <img src="{% static "images/background/new-bg/u1_state0.png" %}" alt="">#}
+            </div>
+            <!-- Logo -->
+        </section>
+        <!--End Banner-->
+
+        <!-- Main -->
+        <div class="main">
+            <div class="container">
+                <div class="main-cn element-page bg-white clearfix">
+                    
+                    <section class="user-profile">
+                        <div class="row">
+                            <br>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-9">
+                                <div class="my-profile">
+                                    <div class="row">
+                                        <form method="post" action="{% url 'login' %}">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="next" value="{{ next }}">
+                                            <input type="hidden" name="customer_id" value="{{ user.id }}">
+
+                                            <div class="col-md-6">
+
+                                                <h4 class="my-profile__title">Login Information</h4>
+                                                <ul>
+                                                    <li><span>Username</span>{{ form.username }}</li>
+                                                    <li><span>Password</span>{{ form.password }}</li>
+                                                    <input class="awe-btn" type="submit" value="Login">
+                                                </ul>
+
+                                            </div>
+
+{#                                            <div class="col-md-6">#}
+{#                                                <h4 class="my-profile__title">Location</h4>#}
+{#                                                <ul>#}
+{#                                                    <li><span>Street Address</span>{{ form.address }}</li>#}
+{#                                                    <li><span>City</span>{{ form.city }}</li>#}
+{#                                                    <li><span>State</span>{{ form.state }}</li>#}
+{#                                                        {{ form.zip_code_errors }}#}
+{#                                                    <li><span>Zip Code</span>{{ form.zip_code }}</li>#}
+{#                                                </ul>#}
+{#                                            </div>#}
+{#                                            <input class="awe-btn" type="submit" name="submit" value="Submit">#}
+                                        </form>
+                                    </div>
+
+                                    <div class="check-box">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!-- End Main -->
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <!-- Logo -->
+                    <div class="col-md-4">
+                        <div class="logo-foter">
+
+                            <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt="">
+
+                        </div>
+                    </div>
+                    <!-- End Logo -->
+
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+
+    </div>
+
+    <!-- Library JS -->
+    <script type="text/javascript" src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/owl.carousel.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/parallax.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.nicescroll.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.ui.touch-punch.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/library/SmoothScroll.js" %}"></script>
+    <!-- End Library JS -->
+    <!-- Main Js -->
+    <script type="text/javascript" src="{% static "js/script.js" %}"></script>
+    <!-- End Main Js -->
 {% endblock %}

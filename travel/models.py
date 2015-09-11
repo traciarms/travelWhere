@@ -30,6 +30,8 @@ class Customer(models.Model):
         (NIGHT_LIFE, 'Night Life')
     )
     user = models.OneToOneField(User)
+    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=100, null=True)
     city = models.CharField(max_length=100, null=True)
     state = models.CharField(max_length=100, null=True)

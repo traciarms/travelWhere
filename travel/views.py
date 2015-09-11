@@ -22,6 +22,8 @@ def create_user(request):
             user = form.save()
             customer = Customer()
             customer.user = user
+            customer.first_name = data['first_name']
+            customer.last_name = data['last_name']
             customer.address = data['address']
             customer.city = data['city']
             customer.state = data['state']
@@ -113,10 +115,9 @@ def location_search(request):
 
     if request.method == 'GET':
         if request.user.is_authenticated():
-            # form = LoggedInSearchForm(
-            #     initial={'zip_code': request.user.customer.zip_code,
-            #              'user_filter': request.user.customer.user_filter})
-            form = LoggedInSearchForm()
+            form = LoggedInSearchForm(
+                initial={'user_filter': request.user.customer.user_filter})
+            # form = LoggedInSearchForm()
         else:
             form = InitSearchForm()
         context = {'form': form}

@@ -229,19 +229,19 @@ section {
   background-image: url('../images/background/bg-t1.jpg');
 }
 .bg-2 {
-  background-image: url('../images/background/new-bg/u1_state0.png');
+  background-image: url('../images/background/bg-2.jpg');
 }
 .bg-3 {
   background-image: url('../images/background/bg-t3.jpg');
 }
 .bg-4 {
-  background-image: url('../images/background/bg-4.jpg');
+  background-image: url('../images/background/new-bg/u1_state0.png');
 }
 .bg-5 {
-  background-image: url('../images/background/bg-5.jpg');
+  background-image: url('../images/background/new-bg/u0_state0.png');
 }
 .bg-6 {
-  background-image: url('../images/background/bg-6.jpg');
+  background-image: url('../images/background/new-bg/u1_state2.jpg');
 }
 .bg-7 {
   background-image: url('../images/background/bg-7.jpg');
@@ -306,7 +306,7 @@ body.menu-active {
   margin-bottom: 30px;
 }
 .main2 {
-  margin-top: -20px;
+  margin-top: -200px;
   margin-bottom: 30px;
 }
 .main.main-dt .main-cn {
@@ -2593,6 +2593,12 @@ blockquote:before {
   padding-left: 15px;
   padding-right: 15px;
 }
+.sub-banner2 {
+  padding-top: 60px;
+  padding-bottom: 385px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .sub-banner .logo-banner img {
   max-width: 100%;
 }
@@ -3509,6 +3515,17 @@ blockquote:before {
 }
 .hotel-list-item .hotel-text .hotel-name a {
   color: #111111;
+  font-size: 30px;
+  line-height: 32px;
+  font-weight: 300;
+  text-decoration: none;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  -ms-transition: all 0.2s linear;
+  -o-transition: all 0.2s linear;
+}
+.hotel-detail2 {
+  color: #25ab4b;
   font-size: 30px;
   line-height: 32px;
   font-weight: 300;

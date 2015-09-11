@@ -1,1 +1,1 @@
-web: gunicorn travelWhere.wsgi --log-file -
+web: python manage.py collectstatic --noinput ; gunicorn travelWhere.wsgi --log-file -

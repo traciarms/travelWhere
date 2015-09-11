@@ -18,13 +18,6 @@ def call_zipcode_api(zipcode, distance):
     if 'zip_codes' in locations.keys():
         location_list = locations['zip_codes']
 
-        # for location in location_list:
-        #     city = location['city']
-        #     state = location['state']
-
-            # if city and state:
-            #     city = City.objects.get_or_create(city=city, state=state)
-
     return location_list
 
 

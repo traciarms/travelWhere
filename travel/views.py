@@ -145,31 +145,9 @@ def location_search(request):
             location_list = call_zipcode_api(zipcode, distance)
 
             city_list = reduce_location_list(distance, location_list)
-            city_dict_list = []
 
             city_event_list = apply_user_filter(user_filter, city_list)
 
-            # if not filter:
-            #
-            #     # for city, state, dist, trail, event, rest in city_event_list:
-            #     for trail, event, rest, city, state in city_event_list:
-            #         city = City.objects.get(city=city, state=state)
-            #         city_dict = {'city': city,
-            #                      # 'dist': dist,
-            #                      'Stats':
-            #                          [{'Label': 'Number of Outdoor Recreation '
-            #                             'activities',
-            #                             'number': trail},
-            #                           {'Label': 'Number of Events such as '
-            #                             'concerts or festivals',
-            #                             'number': event},
-            #                           {'Label': 'Number of Top rated '
-            #                             'restaurants (rated 4.0 or '
-            #                             'higher)',
-            #                             'number': rest}]
-            #                     }
-            #         city_dict_list.append(city_dict)
-            # else:
             city_dict_list = build_filter_dict(user_filter, city_event_list)
 
             context = {'city_dict': city_dict_list,

@@ -12,6 +12,7 @@ def reduce_location_list(distance, location_list):
         min_dist = distance * .75
     else:
         min_dist = 0
+
     for each in location_list:
         if each['distance'] > min_dist:
             city_state = [(x[0], x[1]) for x in city_list]
@@ -23,15 +24,20 @@ def reduce_location_list(distance, location_list):
 
 
 def apply_user_filter(filter, city_list):
+    print(city_list)
 
     if len(city_list) > 0:
+        print('in here len is greater than 0')
         query = reduce(
                 operator.or_,
                 (Q(city=city, state=state)
                         for city, state, dist in city_list))
 
+        print(query)
+        print(City.objects.filter(query))
         city_list_num_hotels = City.objects.filter(query).annotate(
             num_hotels=Count('hotel__hotel_id'))
+        print(city_list_num_hotels)
         city_list_num_events = City.objects.filter(query).annotate(
             num_events=Count('event__eventful_id'))
         city_list_num_trails = City.objects.filter(query).annotate(
@@ -44,6 +50,8 @@ def apply_user_filter(filter, city_list):
         city_tuple_list = []
 
         if filter == 'Hotel Price':
+            print('in here filter is hotel the city_hotel list {}'
+                  .format(city_list_num_hotels))
             for num_hotels, num_trails, num_events in zip(city_list_num_hotels,
                                                          city_list_num_trails,
                                                          city_list_num_events):

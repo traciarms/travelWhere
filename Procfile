@@ -1,0 +1,1 @@
+web: gunicorn travelWhere.wsgi --log-file -

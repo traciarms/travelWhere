@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         api_call = 0
-        all_cities = City.objects.filter(id__gt=16780)
+        all_cities = City.objects.filter(id__gt=19653)
         print(len(all_cities))
         prev_city_id = 0
 

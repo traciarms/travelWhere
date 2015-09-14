@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from travel.views import CityDetail, UserProfile
+from django.contrib.auth.decorators import login_required
+from travel.views import CityDetail, UserProfile, CreateRating
 
 urlpatterns = [
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page':"/"},
@@ -16,6 +17,8 @@ urlpatterns = [
     url(r'^city_list', 'travel.views.location_search', name='city_list'),
     url(r'^city_detail/(?P<city_id>[0-9]+)/', CityDetail.as_view(),
         name='city_detail'),
+    url(r'^create_rating/(?P<city_id>[0-9]+)/',
+        CreateRating.as_view(), name='create_rating'),
     url(r'^admin/', include(admin.site.urls)),
 
 ]

@@ -51,6 +51,7 @@
                                         </li>
                                     {% endif %}
 
+
                                 </ul>
                             </div>
                         </div>
@@ -81,14 +82,27 @@
                     <div class="row">
                     
                         <!-- Hotel Right -->
-                        <!--<div class="col-md-9 col-md-push-3">-->
+                        <div class="col-md-9 col-md-push-3">
 
                             <!-- Hotel List -->
                             <section class="hotel-list">
 
                                 <!-- Sort by and View by -->
                                 <div class="sort-view clearfix">
-
+                                    <div class="sort-by float-left">
+                                        <p>
+                                        <label>Your Top Cities ranked by:&nbsp;
+                                            {% if user.is_authenticated %}
+                                                {% if selected_filter != 'None' %}
+                                                    {{ selected_filter }}
+                                                {% else %}
+                                                    Outdoor Recreation
+                                                {% endif %}
+                                            {% else %}
+                                                Outdoor Recreation
+                                            {% endif %}
+                                        </label>
+                                        </p>
                                     <!-- View by -->
                                 </div>
                                 <!-- End Sort by and View by -->
@@ -110,10 +124,27 @@
                                             </div>
 
                                             <div class="hotel-star-address">
+                                            {% if each.rating != None %}
+                                                <span class="hotel-star">
+                                                {% for i in each.range %}
+                                                    <i class="glyphicon glyphicon-star"></i>
+                                                {% endfor %}
+                                                <br>
+                                                </span>
+                                            {% endif %}
+                                            {% if user.is_authenticated %}
+                                                {% if not each.has_rated %}
+                                                    <a href="{% url 'create_rating' each.city.id %}">
+                                                        Already visited? Click here to rate your visit.
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
                                             <br><br><br>
                                             <ul>
                                                 {% for stats in each.Stats %}
+                                                    {% if stats.number > 0 %}
                                                       <li> {{ stats.Label }}:&nbsp;&nbsp;{{ stats.number }}<br></li>
+                                                    {% endif %}
                                                 {% endfor %}
                                                 <br>
                                             </ul>
@@ -138,8 +169,47 @@
                                 <!-- Page Navigation -->
                             </section>
                             <!-- End Hotel List -->
-                        <!--</div>-->
+                        </div>
                         <!-- End Hotel Right -->
+                        <!-- Sidebar Hotel -->
+                        <div class="col-md-3 col-md-pull-9">
+                            <!-- Sidebar Content -->
+                            <div class="sidebar-cn">
+                                <!-- Search Result -->
+                                <div class="search-result">
+                                    <p>
+                                        <ins>Top Cities</ins> other users with the <ins>same filter</ins>
+                                        <span>have selected:</span>
+                                    </p>
+                                </div>
+                                <!-- End Search Result -->
+                                <!-- City List Sidebar -->
+                                <div class="search-sidebar">
+                                    <div class="row">
+                                        <div class="form-search clearfix">
+                                            <br><br>
+                                            {% for city in city_click_list %}
+
+                                                <div class=" col-md-10">
+                                                <a class="hotel-text"
+                                                   href="{% url 'city_detail' city.city.id %}">
+                                                    <label for="destination">
+                                                        <span>{{ city.city.city }},
+                                                            {{ city.city.state }}<br><br>
+                                                        </span>
+                                                    </label>
+                                                </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End City List Sidebar -->
+
+                            </div>
+                            <!-- End Sidebar Content -->
+                        </div>
+                        <!-- End Sidebar Hotel -->
                     </div>
                 </div>
             </div>
@@ -157,22 +227,67 @@
                         </div>
                     </div>
                     <!-- End Logo -->
+                    <!-- Navigation Footer -->
+                    <div class="col-sm-3 col-md-2">
+                        <div class="ul-ft">
+
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Navigation Footer -->
+                    <div class="col-xs-6 col-sm-3 col-md-2">
+                        <div class="ul-ft">
+
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Footer Currency, Language -->
+                    <div class="col-xs-5 col-sm-4 float-right">
+{#                        <div class="ul-ft">#}<br><br>
+                            <ul> Wanderlust<br><br>
+
+                                [n] a strong or irresistible desire to
+                                Travel • Practice Yoga • Listen to Music
+                                Eat Well • Be Green • Appreciate Art
+                                and create a community around mindful living
+                           </ul>
+{#                            </div>#}
+                    </div>
+                    <!-- End Footer Currency, Language -->
                 </div>
             </div>
         </footer>
         <!-- End Footer -->
     </div>
     <!-- Library JS -->
-    <script type="text/javascript" src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/owl.carousel.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/parallax.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.nicescroll.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.ui.touch-punch.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/SmoothScroll.js" %}"></script>
+    <!--<script type='text/javascript' src='//www.bing.com/widget/bootstrap.js'
+     data-visualization='linksandimages' data-carouselstate='expanded'
+     data-strength='moderate' data-maxlinks='12' data-maxentitylinks='4'
+     data-maxparagraphlinks='5' data-version='1.0b' data-autosnapshot='true'
+     data-id='829a001add0c423c851b167315a8bd8f' data-options='dc=red,cse=1'
+     async></script>-->
+    <script type="text/javascript"
+            src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
+    <script type="text/javascript"
+            src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/bootstrap.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/owl.carousel.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/parallax.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/jquery.nicescroll.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/jquery.ui.touch-punch.min.js" %}">
+
+    </script>
+    <script type="text/javascript"
+            src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
+    <script type="text/javascript"
+            src="{% static "js/library/SmoothScroll.js" %}"></script>
     <!-- End Library JS -->
     <!-- Main Js -->
     <script type="text/javascript" src="{% static "js/script.js" %}"></script>

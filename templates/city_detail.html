@@ -116,26 +116,45 @@
                                             </div>
 
                                             <div class="hotel-star-address">
+                                            {% if hotels %}
                                                 Hotels:
                                                 <ul>
-                                                    <li>Number of hotels with rates less than $50:
-                                                            <strong class="vcard-stat-count">{{ hotels_lt50 }}</strong><br>
-                                                        Number of hotels with rates between $50 and $100:
-                                                            <strong class="vcard-stat-count">{{ hotels_50_100 }}</strong><br>
-                                                        Number of hotels with rates between $100 and $125:
-                                                            <strong class="vcard-stat-count">{{ hotels100_125 }}</strong><br>
+                                                    <li>
+                                                        {% if hotels_lt50 > 0 %}
+                                                            Number of hotels with rates less than $50:
+                                                                <strong class="vcard-stat-count">{{ hotels_lt50 }}</strong><br>
+                                                        {% endif %}
+                                                        {% if hotels_50_100 > 0 %}
+                                                            Number of hotels with rates between $50 and $100:
+                                                                <strong class="vcard-stat-count">{{ hotels_50_100 }}</strong><br>
+                                                        {% endif %}
+                                                        {% if hotels100_125 %}
+                                                            Number of hotels with rates between $100 and $125:
+                                                                <strong class="vcard-stat-count">{{ hotels100_125 }}</strong><br>
+                                                        {% endif %}
                                                     </li>
                                                 </ul>
+                                            {% endif %}
+                                            {% if restaurants %}
                                                 Restaurants:
                                                 <ul>
-                                                    <li>Number of Restaurants with 5.0 Yelp rating:
-                                                        <strong class="vcard-stat-count"> {{ restaurants5 }}</strong><br>
-                                                            Number of Restaurants with 4.5 Yelp rating:
-                                                        <strong class="vcard-stat-count">{{ restaurants4_5 }}</strong><br>
-                                                            Number of Restaurants with 4.0 Yelp rating:
-                                                        <strong class="vcard-stat-count">{{ restaurants4 }}</strong><br>
+                                                    <li>
+                                                        {% if restaurants5 > 0 %}
+                                                            Number of Restaurants with 5.0 rating:
+                                                            <strong class="vcard-stat-count"> {{ restaurants5 }}</strong><br>
+                                                        {% endif %}
+                                                        {% if restaurants4_5 > 0 %}
+                                                                Number of Restaurants with 4.5 rating:
+                                                            <strong class="vcard-stat-count">{{ restaurants4_5 }}</strong><br>
+                                                        {% endif %}
+                                                         {% if restaurants4 > 0 %}
+                                                                Number of Restaurants with 4.0 rating:
+                                                            <strong class="vcard-stat-count">{{ restaurants4 }}</strong><br>
+                                                        {% endif %}
                                                     </li>
                                                 </ul>
+                                            {% endif %}
+                                            {% if outdoor %}
                                                 Outdoor recreation spots:
                                                 <ul>
                                                      <li>    Number of Trails:
@@ -152,29 +171,50 @@
                                                         <strong class="vcard-stat-count">{{ outdoors_state_park }}</strong><br>
                                                     </li>
                                                 </ul>
+                                            {% endif %}
+                                            {% if music %}
                                                 Events and Concerts:
                                                 <ul>
-                                                    <li>    Number of Festivals:
-                                                        <strong class="vcard-stat-count"> {{ events_festivals }}</strong><br>
+                                                    <li>
+                                                        {% if events_festivals > 0 %}
+                                                            Number of Festivals:
+                                                            <strong class="vcard-stat-count"> {{ events_festivals }}</strong><br>
+                                                        {% endif %}
+                                                        {% if events_music > 0 %}
                                                             Number of Concerts:
-                                                        <strong class="vcard-stat-count">{{ events_music }}</strong><br>
+                                                            <strong class="vcard-stat-count">{{ events_music }}</strong><br>
+                                                        {% endif %}
                                                     </li>
                                                 </ul>
+                                            {% endif %}
+                                            {% if nights %}
                                                 Nightlife:
                                                 <ul>
-                                                    <li>    Number of Pubs:
-                                                        <strong class="vcard-stat-count"> {{ nights_pub }}</strong><br>
-                                                            Number of Bars:
-                                                        <strong class="vcard-stat-count">{{ nights_bar }}</strong><br>
-                                                            Number of Sports Bars:
-                                                        <strong class="vcard-stat-count">{{ nights_sports_bar }}</strong><br>
-                                                            Number of Music Venues:
-                                                        <strong class="vcard-stat-count"> {{ nights_music_venues }}</strong><br>
-                                                            Number of Night Clubs:
-                                                        <strong class="vcard-stat-count">{{ nights_night_club }}</strong><br>
+                                                    <li>
+                                                        {% if nights_pub > 0 %}
+                                                            Number of Pubs:
+                                                            <strong class="vcard-stat-count"> {{ nights_pub }}</strong><br>
+                                                        {% endif %}
+                                                    {% if nights_bar %}
+                                                                Number of Bars:
+                                                            <strong class="vcard-stat-count">{{ nights_bar }}</strong><br>
+                                                    {% endif %}
+                                                    {% if nights_sports_bar %}
+                                                                Number of Sports Bars:
+                                                            <strong class="vcard-stat-count">{{ nights_sports_bar }}</strong><br>
+                                                    {% endif %}
+                                                    {% if nights_music_venues %}
+                                                                Number of Music Venues:
+                                                            <strong class="vcard-stat-count"> {{ nights_music_venues }}</strong><br>
+                                                    {% endif %}
+                                                    {% if nights_night_club %}
+                                                                Number of Night Clubs:
+                                                            <strong class="vcard-stat-count">{{ nights_night_club }}</strong><br>
+                                                    {% endif %}
 
                                                     </li>
                                                 </ul>
+                                            {% endif %}
                                             </div>
                                             <p>
 
@@ -217,7 +257,33 @@
                         </div>
                     </div>
                     <!-- End Logo -->
+                    <!-- Navigation Footer -->
+                    <div class="col-sm-3 col-md-2">
+                        <div class="ul-ft">
 
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Navigation Footer -->
+                    <div class="col-xs-6 col-sm-3 col-md-2">
+                        <div class="ul-ft">
+
+                        </div>
+                    </div>
+                    <!-- End Navigation Footer -->
+                    <!-- Footer Currency, Language -->
+                    <div class="col-xs-5 col-sm-4 float-right">
+{#                        <div class="ul-ft">#}<br><br>
+                            <ul> Wanderlust<br><br>
+
+                                [n] a strong or irresistible desire to
+                                Travel • Practice Yoga • Listen to Music
+                                Eat Well • Be Green • Appreciate Art
+                                and create a community around mindful living
+                           </ul>
+{#                            </div>#}
+                    </div>
+                    <!-- End Footer Currency, Language -->
                 </div>
             </div>
         </footer>

@@ -50,8 +50,6 @@
                                             <a href="{% url 'logout' %}" title="">Logout</a>
                                         </li>
                                     {% endif %}
-
-
                                 </ul>
                             </div>
                         </div>
@@ -69,7 +67,6 @@
             <!--End Background-->
             <!-- Logo -->
             <div class="logo-banner text-center">
-{#                    <img src="{% static "images/background/bg-2.jpg" %}" alt="">#}
             </div>
             <!-- Logo -->
         </section>
@@ -113,7 +110,7 @@
                                     <!-- Hotel Item -->
                                     <div class="hotel-list-item">
                                         <figure class="hotel-img float-left">
-                                                <img src="{% static "images/hotel/img-1.jpg" %}" alt="">
+                                                <img src="{{ each.city.img_url }}" alt="">
                                         </figure>
                                         <div class="hotel-text">
                                             <div class="hotel-name">
@@ -125,17 +122,18 @@
 
                                             <div class="hotel-star-address">
                                             {% if each.rating != None %}
+                                                User Rating:
                                                 <span class="hotel-star">
                                                 {% for i in each.range %}
                                                     <i class="glyphicon glyphicon-star"></i>
                                                 {% endfor %}
-                                                <br>
+
                                                 </span>
                                             {% endif %}
                                             {% if user.is_authenticated %}
                                                 {% if not each.has_rated %}
                                                     <a href="{% url 'create_rating' each.city.id %}">
-                                                        Already visited? Click here to rate your visit.
+                                                        Already visited? Click here to rate this city.
                                                     </a>
                                                 {% endif %}
                                             {% endif %}
@@ -216,81 +214,6 @@
         </div>
         <!-- End Main -->
 
-        <!-- Footer -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <!-- Logo -->
-                    <div class="col-md-4">
-                        <div class="logo-foter">
-                            <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt="">
-                        </div>
-                    </div>
-                    <!-- End Logo -->
-                    <!-- Navigation Footer -->
-                    <div class="col-sm-3 col-md-2">
-                        <div class="ul-ft">
-
-                        </div>
-                    </div>
-                    <!-- End Navigation Footer -->
-                    <!-- Navigation Footer -->
-                    <div class="col-xs-6 col-sm-3 col-md-2">
-                        <div class="ul-ft">
-
-                        </div>
-                    </div>
-                    <!-- End Navigation Footer -->
-                    <!-- Footer Currency, Language -->
-                    <div class="col-xs-5 col-sm-4 float-right">
-{#                        <div class="ul-ft">#}<br><br>
-                            <ul> Wanderlust<br><br>
-
-                                [n] a strong or irresistible desire to
-                                Travel • Practice Yoga • Listen to Music
-                                Eat Well • Be Green • Appreciate Art
-                                and create a community around mindful living
-                           </ul>
-{#                            </div>#}
-                    </div>
-                    <!-- End Footer Currency, Language -->
-                </div>
-            </div>
-        </footer>
-        <!-- End Footer -->
     </div>
-    <!-- Library JS -->
-    <!--<script type='text/javascript' src='//www.bing.com/widget/bootstrap.js'
-     data-visualization='linksandimages' data-carouselstate='expanded'
-     data-strength='moderate' data-maxlinks='12' data-maxentitylinks='4'
-     data-maxparagraphlinks='5' data-version='1.0b' data-autosnapshot='true'
-     data-id='829a001add0c423c851b167315a8bd8f' data-options='dc=red,cse=1'
-     async></script>-->
-    <script type="text/javascript"
-            src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
-    <script type="text/javascript"
-            src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/bootstrap.min.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/owl.carousel.min.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/parallax.min.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/jquery.nicescroll.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/jquery.ui.touch-punch.min.js" %}">
-
-    </script>
-    <script type="text/javascript"
-            src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
-    <script type="text/javascript"
-            src="{% static "js/library/SmoothScroll.js" %}"></script>
-    <!-- End Library JS -->
-    <!-- Main Js -->
-    <script type="text/javascript" src="{% static "js/script.js" %}"></script>
-    <!-- End Main Js -->
 
 {% endblock %}

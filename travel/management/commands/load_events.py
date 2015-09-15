@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         api_call = 0
-        all_cities = City.objects.filter(id__gt=19653)
+        all_cities = City.objects.filter(id__gt=21969)
         print(len(all_cities))
         prev_city_id = 0
 
@@ -16,10 +16,14 @@ class Command(BaseCommand):
             print('the city_id is {} and the prev_city_id is {}'.
                   format(city.id, prev_city_id))
             if city.id != prev_city_id:
-                response = requests.get('http://api.eventful.com/json/events/search?'\
-                                    'app_key={}&l={},{}&within={}&c={},{}'.\
-                                    format(EVENTFUL_API_KEY, city.city, city.state,
-                                    '30', 'festivals_parades', 'music'))
+                response = requests.get('http://api.eventful.com/json/events/'\
+                                        'search?'\
+                                        'app_key={}&l={},{}&within={}&c='\
+                                        '{},{}'.\
+                                        format(EVENTFUL_API_KEY,
+                                               city.city,
+                                               city.state,
+                                        '10', 'festivals_parades', 'music'))
                 api_call += 1
                 prev_city_id = city.id
                 events = response.json()

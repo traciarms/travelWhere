@@ -1,17 +1,17 @@
-from functools import reduce
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Q, F
+from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import DetailView, UpdateView, CreateView
-import operator
 from travel.zipcode_api import call_zipcode_api
 from travel.forms import InitSearchForm, CustomerCreationForm, \
     LoggedInSearchForm, CustomerProfile
 from travel.models import Customer, City, CityClick, Rating
 from travel.utils import apply_user_filter, build_filter_dict, \
-    reduce_location_list, find_user_clicked
+    reduce_location_list, find_user_clicked, get_outdoor_context, \
+    get_hotel_context, get_restaurant_context, get_music_context, \
+    get_night_context
 
 
 def create_user(request):
@@ -69,12 +69,14 @@ class CityDetail(DetailView):
         if self.request.user.is_authenticated():
             customer = self.request.user.customer
             try:
-                city_click = CityClick.objects.get(city=city, customer=customer)
+                city_click = CityClick.objects.get(city=city,
+                                                   customer=customer)
                 city_click.num_clicks = F('num_clicks') + 1
 
             except CityClick.DoesNotExist:
-                city_click = CityClick.objects.create(city=city, customer=customer,
-                                              num_clicks=1)
+                city_click = CityClick.objects.create(city=city,
+                                                      customer=customer,
+                                                      num_clicks=1)
             city_click.save()
 
         self.object = self.get_object()
@@ -86,93 +88,11 @@ class CityDetail(DetailView):
         context = super(CityDetail, self).get_context_data(**kwargs)
         city = City.objects.get(pk=city.id)
 
-        outdoors_trails = len(city.outdoorrecreation_set.filter(
-                name__icontains='trail'))
-        outdoors_mountain_resorts = len(city.outdoorrecreation_set.filter(
-                name__icontains='mountain resort'))
-        outdoors_campground = len(city.outdoorrecreation_set.filter(
-                name__icontains='campground'))
-        outdoors_state_park = len(city.outdoorrecreation_set.filter(
-                name__icontains='state park'))
-        outdoors_peak = len(city.outdoorrecreation_set.filter(
-                Q(name__icontains='peak') | Q(name__icontains='lookout')))
-        outdoors_lake = len(city.outdoorrecreation_set.filter(
-                name__icontains='lake'))
-        outdoors_other = len(city.outdoorrecreation_set.exclude(reduce(
-                                operator.or_,
-                                    (Q(name__icontains='trail'),
-                                     Q(name__icontains='mountain resort'),
-                                     Q(name__icontains='campground'),
-                                     Q(name__icontains='state park'),
-                                     Q(name__icontains='peak'),
-                                     Q(name__icontains='lookout'),
-                                     Q(name__icontains='lake')))))
-        context['outdoors_trails'] = outdoors_trails
-        context['outdoors_mountain_resorts'] = outdoors_mountain_resorts
-        context['outdoors_campground'] = outdoors_campground
-        context['outdoors_state_park'] = outdoors_state_park
-        context['outdoors_peak'] = outdoors_peak
-        context['outdoors_lake'] = outdoors_lake
-        context['outdoors_other'] = outdoors_other
-        context['outdoor'] = ((outdoors_trails > 0) or
-                              (outdoors_mountain_resorts > 0) or
-                              (outdoors_campground > 0) or
-                              (outdoors_state_park > 0) or
-                              (outdoors_peak > 0) or
-                              (outdoors_lake > 0) or
-                              (outdoors_other > 0))
-
-        hotels_lt50 = len(city.hotel_set.filter(high_rate__lt=50))
-        hotels_50_100 = len(city.hotel_set.filter(low_rate__gt=50,
-                                                  high_rate__lt=100))
-        hotels100_125 = len(city.hotel_set.filter(low_rate__gt=100,
-                                                  high_rate__lt=125))
-        context['hotels'] = ((hotels_lt50 > 0) or
-                             (hotels_50_100 > 0) or
-                             (hotels100_125 > 0))
-        context['hotels_lt50'] = hotels_lt50
-        context['hotels_50_100'] = hotels_50_100
-        context['hotels100_125'] = hotels100_125
-
-        restaurants4 = len(city.restaurant_set.filter(rating=4.0))
-        restaurants4_5 = len(city.restaurant_set.filter(rating=4.5))
-        restaurants5 = len(city.restaurant_set.filter(rating=5.0))
-        context['restaurants4'] = restaurants4
-        context['restaurants4_5'] = restaurants4_5
-        context['restaurants5'] = restaurants5
-        context['restaurants'] = ((restaurants4 > 0) or
-                                  (restaurants4_5 > 0) or
-                                  (restaurants5 > 0))
-
-        events_festivals = \
-            len(city.event_set.filter(title__icontains='fest'))
-        events_music = \
-            len(city.event_set.exclude(title__icontains='fest'))
-        context['events_festivals'] = events_festivals
-        context['events_music'] = events_music
-        context['music'] = ((events_festivals > 0) or
-                            (events_music > 0))
-
-        nights_pub = \
-            len(city.nightlife_set.filter(category__icontains='pub'))
-        nights_bar = \
-            len(city.nightlife_set.filter(category__icontains='bar'))
-        nights_sports_bar = \
-            len(city.nightlife_set.filter(category__icontains='sports bar'))
-        nights_music_venues = \
-            len(city.nightlife_set.filter(category__icontains='music venue'))
-        nights_night_club = \
-            len(city.nightlife_set.filter(category__icontains='night club'))
-        context['nights_pub'] = nights_pub
-        context['nights_bar'] = nights_bar
-        context['nights_sports_bar'] = nights_sports_bar
-        context['nights_music_venues'] = nights_music_venues
-        context['nights_night_club'] = nights_night_club
-        context['nights'] = ((nights_pub > 0) or
-                             (nights_bar > 0) or
-                             (nights_sports_bar > 0) or
-                             (nights_music_venues > 0) or
-                             (nights_night_club > 0))
+        context['outdoor'] = get_outdoor_context(city)
+        context['hotel'] = get_hotel_context(city)
+        context['restaurant'] = get_restaurant_context(city)
+        context['music'] = get_music_context(city)
+        context['night'] = get_night_context(city)
 
         return context
 
@@ -209,7 +129,6 @@ def location_search(request):
         if request.user.is_authenticated():
             form = LoggedInSearchForm(
                 initial={'user_filter': request.user.customer.user_filter})
-            # form = LoggedInSearchForm()
         else:
             form = InitSearchForm()
         context = {'form': form}
@@ -259,6 +178,9 @@ def location_search(request):
 
 
 class CreateRating(CreateView):
+    """
+        This is the view for creating the City rating
+    """
     model = Rating
     fields = ('rating',)
     success_url = reverse_lazy('city_detail')

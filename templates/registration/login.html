@@ -60,11 +60,10 @@
          <!--Banner-->
         <section class="sub-banner2">
             <!--Background-->
-            <div class="bg-parallax bg-5"></div>
+            <div class="bg-parallax bg-11"></div>
             <!--End Background-->
             <!-- Logo -->
             <div class="logo-banner text-center">
-{#                    <img src="{% static "images/background/new-bg/u1_state0.png" %}" alt="">#}
             </div>
             <!-- Logo -->
         </section>
@@ -93,8 +92,9 @@
                                             <div class="col-md-6">
 
                                                 <h4 class="my-profile__title">Login Information</h4>
-                                                <ul>
+                                                <ul>    {{ form.username.errors }}
                                                     <li><span>Username</span>{{ form.username }}</li>
+                                                        {{ form.password.errors }}
                                                     <li><span>Password</span>{{ form.password }}</li>
                                                     <input class="awe-btn" type="submit" value="Login">
                                                 </ul>
@@ -126,41 +126,4 @@
             </div>
         </div>
         <!-- End Main -->
-
-        <!-- Footer -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <!-- Logo -->
-                    <div class="col-md-4">
-                        <div class="logo-foter">
-
-                            <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt="">
-
-                        </div>
-                    </div>
-                    <!-- End Logo -->
-
-                </div>
-            </div>
-        </footer>
-        <!-- End Footer -->
-
-    </div>
-
-    <!-- Library JS -->
-    <script type="text/javascript" src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/owl.carousel.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/parallax.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.nicescroll.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.ui.touch-punch.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/SmoothScroll.js" %}"></script>
-    <!-- End Library JS -->
-    <!-- Main Js -->
-    <script type="text/javascript" src="{% static "js/script.js" %}"></script>
-    <!-- End Main Js -->
 {% endblock %}

@@ -50,11 +50,8 @@ class Customer(models.Model):
 
     def has_rated_city(self, city_id):
         city = City.objects.get(pk=city_id)
-        print('the user.customer.id is {}'.format(self.user.customer.id))
         ratings = city.rating_set
-        print('the ratings list for city {} is {}'.format(city.city, ratings))
         rated = len(ratings.filter(customer_id=self.user.customer.id)) > 0
-        print('the boolean rated is {}'.format(rated))
         return rated
 
     def __str__(self):
@@ -69,7 +66,7 @@ class City(models.Model):
     """
     city = models.CharField(max_length=100, db_index=True)
     state = models.CharField(max_length=5, db_index=True)
-    img_url = models.CharField(max_length=250, null=True)
+    img_url = models.TextField(null=True)
 
     def get_avg_rating(self):
         return self.rating_set.aggregate(rating=Avg('rating'))

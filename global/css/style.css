@@ -53,7 +53,21 @@ img {
   max-width: 100%;
   vertical-align: middle;
 }
-
+figure {
+    max-width: 350px;
+}
+.city-detail-item {
+  color: #111;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: 'Open sans';
+}
+.city-detail-item a:hover {
+  color: #4db74f;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: 'Open sans';
+}
 #preloader {
   position: fixed;
   display: table;
@@ -168,19 +182,20 @@ section {
   bottom: 0;
   z-index: -2;
   background-position: 50% 50%;
+  background-attachment: fixed;
   background-repeat: no-repeat;
 }
 
 .ie .bg-fixed,
 .ie .bg-parallax {
-  background-attachment: scroll !important;
+  background-attachment: fixed !important;
   background-position: 50% 50% !important;
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   .bg-fixed,
   .bg-parallax {
-    background-attachment: scroll !important;
+    background-attachment: fixed !important;
     background-position: 50% 50% !important;
   }
 }
@@ -221,6 +236,15 @@ section {
   z-index: -1;
   background-color: rgba(0, 0, 0, 0.2);
 }
+.wrapBlock {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 45%;
+  border: 1px red;
+  font-size: 13px;
+  padding: 20px;
+}
 
 .bg-white {
   background-color: #fff;
@@ -251,10 +275,13 @@ section {
   background-image: url('../images/background/getting-the-shot3.jpg');
 }
 .bg-9 {
-  background-image: url('../images/background/bg-9.png');
+  background-image: url('../images/background/lake-tahoe3.jpg');
 }
 .bg-10 {
-  background-image: url('../images/background/bg-10.png');
+  background-image: url('../images/background/sunrise-at-vermillion3.jpg');
+}
+.bg-11 {
+  background-image: url('../images/background/dave3.jpg');
 }
 .tb {
   display: table;
@@ -3515,6 +3542,17 @@ blockquote:before {
   overflow: hidden;
   margin-left: 330px;
 }
+.hotel-detail-item .hotel-text {
+  position: relative;
+  overflow: hidden;
+  margin-left: 200px;
+}
+.hotel-detail-item .hotel-text .detail-heading {
+  color: #25ab4b;
+  font-size: 20px;
+  text-decoration: underline;
+  font-family: 'Open sans';
+}
 .hotel-list-item .hotel-text .hotel-name a {
   color: #111111;
   font-size: 30px;
@@ -3527,6 +3565,8 @@ blockquote:before {
   -o-transition: all 0.2s linear;
 }
 .hotel-detail2 {
+  padding-top: 40px;
+  padding-left: 10px;
   color: #25ab4b;
   font-size: 30px;
   line-height: 32px;

@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django import forms
 from django.forms import ModelForm
-from django.utils.safestring import mark_safe
 from travel import models
 from travel.models import Customer
 from travel.validators import validate_zip_code

@@ -1,6 +1,542 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block content %}
+{#    <head>#}
+{#  <meta name="viewport" content="width=device-width, initial-scale=1">#}
+{#  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">#}
+{#  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>#}
+{#  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>#}
+  <style>
+  .modal-header, h4, .close {
+      background-color: #5cb85c;
+      color:white !important;
+      text-align: center;
+      font-size: 30px;
+  }
+  .modal-backdrop.in {
+      z-index: auto;
+  }
+  .modal-footer {
+      background-color: #f9f9f9;
+  }
+  </style>
+
+    <!-- Hotels less than $50 Modal -->
+<div class="modal" id="hotel_lt50Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Hotels in {{ city.city }} with a nightly rate less than $50:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in hotel.hotels_lt50 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Hotels between $50 and $100 Modal -->
+<div class="modal" id="hotel_50_100Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Hotels in {{ city.city }} with a nightly rate less than $50:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in hotel.hotels_50_100 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Hotels between $100 and $125 Modal -->
+<div class="modal" id="hotel_100_125Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Hotels in {{ city.city }} with a nightly rate less than $50:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in hotel.hotels_100_125 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 5.0 Restaurant Modal -->
+<div class="modal" id="rests5Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Restaurants in {{ city.city }} with a 5.0 rating:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in restaurant.restaurants5 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- 4.5 Restaurant Modal -->
+<div class="modal" id="rests4_5Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Restaurants in {{ city.city }} with a 4.5 rating:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in restaurant.restaurants4_5 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- 4.0 Restaurant Modal -->
+<div class="modal" id="rests4Modal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Restaurants in {{ city.city }} with a 4.0 rating:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in restaurant.restaurants4 %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Trail Modal -->
+<div class="modal" id="trailsModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Trails in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_trails %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Campground Modal -->
+<div class="modal" id="campgroundModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Campgrounds in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_campground %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Mountain Resorts Modal -->
+<div class="modal" id="mnt_ResortModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Mountain Resorts in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_mountain_resorts %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- State Park Modal -->
+<div class="modal" id="stParkModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>State Parks in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_state_park %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Peak Modal -->
+<div class="modal" id="peakModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Peaks/Lookouts in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_peak %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Lake Modal -->
+<div class="modal" id="lakeModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Lakes in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_lake %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Other (outdoor) Modal -->
+<div class="modal" id="otherModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Other outdoor recreation in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in outdoor.outdoors_other %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.loc_city }}, {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Festival Modal -->
+<div class="modal" id="festivalModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Festivals in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in music.events_festivals %}
+            <div class="form-group">
+                <u>{{ each.title }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Music Modal -->
+<div class="modal" id="musicModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Music/Concerts in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in music.events_music %}
+            <div class="form-group">
+                <u>{{ each.title }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+        <!-- Pub Modal -->
+<div class="modal" id="pubModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Pubs in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in night.nights_pub %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Bar Modal -->
+<div class="modal" id="barModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Bars in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in night.nights_bar %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Sports Bar Modal -->
+<div class="modal" id="sports_barModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Sports Bars in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in night.nights_sports_bar %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Music Venue Modal -->
+<div class="modal" id="music_venueModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Music Venues in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in night.nights_music_venues %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Night Club Modal -->
+<div class="modal" id="night_clubModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header" style="padding:35px 50px;">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4>Night Club in {{ city.city }}:</h4>
+    </div>
+    <div class="modal-body" style="padding:40px 50px;">
+      <form role="form">
+          {% for each in night.nights_night_club %}
+            <div class="form-group">
+                <u>{{ each.name }}:</u>
+                {{ each.address }}, {{ each.loc_city }},
+                {{ each.state }}<br>
+                {{ each.category }}
+            </div>
+          {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+$(document).ready(function(){
+    $("#myBtn").click(function(){
+        $("#myModal").modal();
+    });
+});
+</script>
+
 <!--<!DOCTYPE html>-->
 <!--[if IE 7 ]> <html class="ie ie7"> <![endif]-->
 <!--[if IE 8 ]> <html class="ie ie8"> <![endif]-->
@@ -73,7 +609,7 @@
         <!--Banner-->
         <section class="sub-banner2">
             <!--Background-->
-            <div class="bg-parallax bg-5"></div>
+            <div class="bg-parallax bg-9"></div>
             <!--End Background-->
             <!-- Logo -->
             <div class="logo-banner text-center">
@@ -90,130 +626,204 @@
                     <div class="row">
                     
                         <!-- Hotel Right -->
-                        <!--<div class="col-md-9 col-md-push-3">-->
-
                             <!-- Hotel List -->
                             <section class="hotel-list">
 
                                 <!-- Sort by and View by -->
                                 <div class="sort-view clearfix">
-
+                                    <figure class="hotel-img float-left">
+                                        <img src="{{ city.img_url }}" alt="">
+                                    </figure>
+                                    <div class="hotel-detail2">
+                                        &nbsp;All the details for {{ city.city }}, {{ city.state }}:
+                                    </div>
                                     <!-- View by -->
                                 </div>
                                 <!-- End Sort by and View by -->
 
                                 <!-- Hotel Grid Content-->
-                                <div class="hotel-list-cn clearfix">
                                     <!-- Hotel Item -->
-                                    <div class="hotel-list-item">
-                                        <figure class="hotel-img float-left">
-                                                <img src="{% static "images/hotel/img-1.jpg" %}" alt="">
-                                        </figure>
-                                        <div class="hotel-text">
-                                            <div class="hotel-detail2">
-                                                <a>All the details for {{ city.city }}, {{ city.state }}:</a>
+                                    <div class="hotel-detail-item">
 
-                                            </div>
+                                        <div class="hotel-text">
+
 
                                             <div class="hotel-star-address">
-                                            {% if hotels %}
-                                                Hotels:
-                                                <ul>
-                                                    <li>
-                                                        {% if hotels_lt50 > 0 %}
-                                                            Number of hotels with rates less than $50:
-                                                                <strong class="vcard-stat-count">{{ hotels_lt50 }}</strong><br>
-                                                        {% endif %}
-                                                        {% if hotels_50_100 > 0 %}
-                                                            Number of hotels with rates between $50 and $100:
-                                                                <strong class="vcard-stat-count">{{ hotels_50_100 }}</strong><br>
-                                                        {% endif %}
-                                                        {% if hotels100_125 %}
-                                                            Number of hotels with rates between $100 and $125:
-                                                                <strong class="vcard-stat-count">{{ hotels100_125 }}</strong><br>
-                                                        {% endif %}
-                                                    </li>
-                                                </ul>
+                                            {% if hotel.show_hotels %}
+                                                <div class="wrapBlock">
+                                                    <div class="detail-heading">
+                                                        Hotels:
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            {% if hotel.num_hotels_lt50 > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#hotel_lt50Modal">
+                                                                    Number of hotels with rates less than $50:
+                                                                    <strong class="vcard-stat-count">{{ hotel.num_hotels_lt50 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if hotel.num_hotels_50_100 > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#hotel_50_100Modal">
+                                                                    Number of hotels with rates between $50 and $100:
+                                                                    <strong class="vcard-stat-count">{{ hotel.num_hotels_50_100 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if hotel.num_hotels100_125 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#hotel_100_125Modal">
+                                                                    Number of hotels with rates between $100 and $125:
+                                                                    <strong class="vcard-stat-count">{{ hotel.num_hotels100_125 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             {% endif %}
-                                            {% if restaurants %}
-                                                Restaurants:
-                                                <ul>
-                                                    <li>
-                                                        {% if restaurants5 > 0 %}
-                                                            Number of Restaurants with 5.0 rating:
-                                                            <strong class="vcard-stat-count"> {{ restaurants5 }}</strong><br>
-                                                        {% endif %}
-                                                        {% if restaurants4_5 > 0 %}
-                                                                Number of Restaurants with 4.5 rating:
-                                                            <strong class="vcard-stat-count">{{ restaurants4_5 }}</strong><br>
-                                                        {% endif %}
-                                                         {% if restaurants4 > 0 %}
-                                                                Number of Restaurants with 4.0 rating:
-                                                            <strong class="vcard-stat-count">{{ restaurants4 }}</strong><br>
-                                                        {% endif %}
-                                                    </li>
-                                                </ul>
+                                            {% if restaurant.show_restaurants %}
+                                                <div class="wrapBlock">
+                                                    <div class="detail-heading">
+                                                        Restaurants:
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            {% if restaurant.num_restaurants5 > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#rests5Modal">
+                                                                    Number of Restaurants with 5.0 rating:
+                                                                    <strong class="vcard-stat-count"> {{ restaurant.num_restaurants5 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if restaurant.num_restaurants4_5 > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#rests4_5Modal">
+                                                                    Number of Restaurants with 4.5 rating:
+                                                                    <strong class="vcard-stat-count">{{ restaurant.num_restaurants4_5 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                             {% if restaurant.restaurants4 > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#rests4Modal">
+                                                                    Number of Restaurants with 4.0 rating:
+                                                                    <strong class="vcard-stat-count">{{ restaurant.restaurants4 }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             {% endif %}
-                                            {% if outdoor %}
-                                                Outdoor recreation spots:
-                                                <ul>
-                                                     <li>    Number of Trails:
-                                                        <strong class="vcard-stat-count"> {{ outdoors_trails }}</strong><br>
-                                                            Number of Campgrounds:
-                                                        <strong class="vcard-stat-count">{{ outdoors_campground }}</strong><br>
-                                                            Number of Lakes:
-                                                        <strong class="vcard-stat-count"> {{ outdoors_lake }}</strong><br>
-                                                            Number of Mountain Resorts:
-                                                        <strong class="vcard-stat-count">{{ outdoors_mountain_resorts }}</strong><br>
-                                                            Number of Peaks/Lookout:
-                                                        <strong class="vcard-stat-count"> {{ outdoors_peak }}</strong><br>
-                                                            Number of State Parks:
-                                                        <strong class="vcard-stat-count">{{ outdoors_state_park }}</strong><br>
-                                                    </li>
-                                                </ul>
-                                            {% endif %}
-                                            {% if music %}
-                                                Events and Concerts:
-                                                <ul>
-                                                    <li>
-                                                        {% if events_festivals > 0 %}
-                                                            Number of Festivals:
-                                                            <strong class="vcard-stat-count"> {{ events_festivals }}</strong><br>
-                                                        {% endif %}
-                                                        {% if events_music > 0 %}
-                                                            Number of Concerts:
-                                                            <strong class="vcard-stat-count">{{ events_music }}</strong><br>
-                                                        {% endif %}
-                                                    </li>
-                                                </ul>
-                                            {% endif %}
-                                            {% if nights %}
-                                                Nightlife:
-                                                <ul>
-                                                    <li>
-                                                        {% if nights_pub > 0 %}
-                                                            Number of Pubs:
-                                                            <strong class="vcard-stat-count"> {{ nights_pub }}</strong><br>
-                                                        {% endif %}
-                                                    {% if nights_bar %}
-                                                                Number of Bars:
-                                                            <strong class="vcard-stat-count">{{ nights_bar }}</strong><br>
-                                                    {% endif %}
-                                                    {% if nights_sports_bar %}
-                                                                Number of Sports Bars:
-                                                            <strong class="vcard-stat-count">{{ nights_sports_bar }}</strong><br>
-                                                    {% endif %}
-                                                    {% if nights_music_venues %}
-                                                                Number of Music Venues:
-                                                            <strong class="vcard-stat-count"> {{ nights_music_venues }}</strong><br>
-                                                    {% endif %}
-                                                    {% if nights_night_club %}
-                                                                Number of Night Clubs:
-                                                            <strong class="vcard-stat-count">{{ nights_night_club }}</strong><br>
-                                                    {% endif %}
+                                            {% if outdoor.show_outdoor %}
+                                                <div class="wrapBlock">
+                                                    <div class="detail-heading">
+                                                        Outdoor recreation spots:
+                                                    </div>
+                                                    <ul>
+                                                         <li>
+                                                             {% if outdoor.num_outdoors_trails > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#trailsModal">
+                                                                    Number of Trails:
+                                                                    <strong class="vcard-stat-count"> {{ outdoor.num_outdoors_trails }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_campground > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#campgroundModal">
+                                                                     Number of Campgrounds:
+                                                                     <strong class="vcard-stat-count">{{ outdoor.num_outdoors_campground }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_lake > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#lakeModal">
+                                                                     Number of Lakes:
+                                                                    <strong class="vcard-stat-count"> {{ outdoor.num_outdoors_lake }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_mountain_resorts > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#mntResortModal">
+                                                                     Number of Mountain Resorts:
+                                                                    <strong class="vcard-stat-count">{{ outdoor.num_outdoors_mountain_resorts }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_peak > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#peakModal">
+                                                                    Number of Peaks/Lookout:
+                                                                    <strong class="vcard-stat-count"> {{ outdoor.num_outdoors_peak }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_state_park > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#stParkModal">
+                                                                     Number of State Parks:
+                                                                    <strong class="vcard-stat-count">{{ outdoor.num_outdoors_state_park }}</strong><br>
+                                                                </a>
+                                                             {% endif %}
+                                                             {% if outdoor.num_outdoors_other > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#otherModal">
+                                                                     Number of Other outdoor recreations:
+                                                                     <strong class="vcard-stat-count">{{ outdoor.num_outdoors_other }}</strong><br>
+                                                                 </a>
+                                                             {% endif %}
 
-                                                    </li>
-                                                </ul>
+                                                         </li>
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                            {% if music.show_music %}
+                                                <div class="wrapBlock">
+                                                    <div class="detail-heading">
+                                                        Events and Concerts:
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            {% if music.num_events_festivals > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#festivalModal">
+                                                                    Number of Festivals:
+                                                                    <strong class="vcard-stat-count"> {{ music.num_events_festivals }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if music.num_events_music > 0 %}
+                                                                 <a class="city-detail-item" data-toggle="modal" href="#musicModal">
+                                                                    Number of Concerts:
+                                                                    <strong class="vcard-stat-count">{{ music.num_events_music }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                            {% if night.show_nights %}
+                                                <div class="wrapBlock">
+                                                    <div class="detail-heading">
+                                                        Nightlife:
+                                                    </div>
+                                                    <ul>
+                                                        <li>
+                                                            {% if night.num_nights_pub > 0 %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#pubModal">
+                                                                    Number of Pubs:
+                                                                    <strong class="vcard-stat-count"> {{ night.num_nights_pub }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if night.num_nights_bar %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#barModal">
+                                                                    Number of Bars:
+                                                                    <strong class="vcard-stat-count">{{ night.num_nights_bar }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if night.num_nights_sports_bar %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#sports_barModal">
+                                                                    Number of Sports Bars:
+                                                                    <strong class="vcard-stat-count">{{ night.num_nights_sports_bar }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if night.num_nights_music_venues %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#music_venueModal">
+                                                                    Number of Music Venues:
+                                                                    <strong class="vcard-stat-count"> {{ night.num_nights_music_venues }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                            {% if night.num_nights_night_club %}
+                                                                <a class="city-detail-item" data-toggle="modal" href="#night_clubModal">
+                                                                    Number of Night Clubs:
+                                                                    <strong class="vcard-stat-count">{{ night.num_nights_night_club }}</strong><br>
+                                                                </a>
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             {% endif %}
                                             </div>
                                             <p>
@@ -230,7 +840,7 @@
                                     </div>
                                     <!-- End Hotel Item -->
 
-                                </div>
+                                <!--</div>-->
                                 <!-- End Hotel Grid Content-->
                                 <!-- Page Navigation -->
                             </section>
@@ -243,68 +853,6 @@
             </div>
         </div>
         <!-- End Main -->
-
-        <!-- Footer -->
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <!-- Logo -->
-                    <div class="col-md-4">
-                        <div class="logo-foter">
-
-                            <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt="">
-
-                        </div>
-                    </div>
-                    <!-- End Logo -->
-                    <!-- Navigation Footer -->
-                    <div class="col-sm-3 col-md-2">
-                        <div class="ul-ft">
-
-                        </div>
-                    </div>
-                    <!-- End Navigation Footer -->
-                    <!-- Navigation Footer -->
-                    <div class="col-xs-6 col-sm-3 col-md-2">
-                        <div class="ul-ft">
-
-                        </div>
-                    </div>
-                    <!-- End Navigation Footer -->
-                    <!-- Footer Currency, Language -->
-                    <div class="col-xs-5 col-sm-4 float-right">
-{#                        <div class="ul-ft">#}<br><br>
-                            <ul> Wanderlust<br><br>
-
-                                [n] a strong or irresistible desire to
-                                Travel • Practice Yoga • Listen to Music
-                                Eat Well • Be Green • Appreciate Art
-                                and create a community around mindful living
-                           </ul>
-{#                            </div>#}
-                    </div>
-                    <!-- End Footer Currency, Language -->
-                </div>
-            </div>
-        </footer>
-        <!-- End Footer -->
-        
     </div>
-    
-    <!-- Library JS -->
-    <script type="text/javascript" src="{% static "js/library/jquery-1.11.0.min.js" %}"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery-ui.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/bootstrap.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/owl.carousel.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/parallax.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.nicescroll.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.ui.touch-punch.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/jquery.mb.YTPlayer.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "js/library/SmoothScroll.js" %}"></script>
-    <!-- End Library JS -->
-    <!-- Main Js -->
-    <script type="text/javascript" src="{% static "js/script.js" %}"></script>
-    <!-- End Main Js -->
 
 {% endblock %}

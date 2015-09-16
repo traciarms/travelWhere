@@ -8,10 +8,10 @@ from travel.zipcode_api import call_zipcode_api
 from travel.forms import InitSearchForm, CustomerCreationForm, \
     LoggedInSearchForm, CustomerProfile
 from travel.models import Customer, City, CityClick, Rating
-from travel.utils import apply_user_filter, build_filter_dict, \
+from travel.utils import apply_user_filter, \
     reduce_location_list, find_user_clicked, get_outdoor_context, \
     get_hotel_context, get_restaurant_context, get_music_context, \
-    get_night_context
+    get_night_context, build_template_dict
 
 
 def create_user(request):
@@ -42,12 +42,7 @@ def create_user(request):
                 if user.is_active:
                     login(request, user)
 
-            if request.user.is_authenticated():
-                # return HttpResponseRedirect(reverse('profile',
-                #                                      args=[user.customer.id]))
-                return HttpResponseRedirect(reverse('index'))
-            else:
-                return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('index'))
     else:
         form = CustomerCreationForm()
 
@@ -148,10 +143,10 @@ def location_search(request):
 
             if request.user.is_authenticated():
                 selected_filter = data['user_filter']
-                filter = True
+                is_filter = True
             else:
                 selected_filter = 'None'
-                filter = False
+                is_filter = False
 
             location_list = call_zipcode_api(zipcode, distance)
 
@@ -159,9 +154,7 @@ def location_search(request):
 
             city_event_list = apply_user_filter(selected_filter, city_list)
 
-            city_dict_list = build_filter_dict(selected_filter,
-                                               city_event_list,
-                                               request.user)
+            city_dict_list = build_template_dict(city_event_list, request.user)
 
             city_click_list = find_user_clicked(selected_filter)
 
@@ -179,14 +172,12 @@ def location_search(request):
             else:
 
                 context = {'city_dict': city_dict_list,
-                           'filter': filter,
+                           'filter': is_filter,
                            'selected_filter': selected_filter,
                            'city_click_list': city_click_list}
                 return render(request, 'city_list.html', context)
-
         else:
             context = {'form': form}
-
             return render(request, 'index.html', context)
 
 

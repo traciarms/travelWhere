@@ -3,6 +3,13 @@ from django.db.models import Q, Count
 import operator
 from travel.models import City, CityClick
 
+filter_dict = {'None': 0,
+               'Hotel Price': 3,
+               'Restaurant Rating': 2,
+               'Outdoor Recreation': 0,
+               'Events/Concerts': 1,
+               'Night Life': 4}
+
 
 def reduce_location_list(distance, location_list):
     """
@@ -46,14 +53,15 @@ def find_user_clicked(selected_filter):
     return city_click_list
 
 
-def apply_user_filter(filter, city_list):
+def apply_user_filter(user_filter, city_list):
     """
         This method applies the filter selected by the user to the list
         passed in.  It returns the filtered list.
-        :param filter:
+        :param user_filter:
         :param city_list:
         :return:
     """
+    city_tuple_list = []
     if len(city_list) > 0:
         query = reduce(operator.or_,
                        (Q(city=city, state=state)
@@ -70,215 +78,83 @@ def apply_user_filter(filter, city_list):
         city_list_num_rests = City.objects.filter(query).annotate(
             num_rests=Count('restaurant__yelp_id'))
 
-        city_tuple_list = []
+        for num_hotels, num_events, num_trails, num_clubs, num_rests in \
+                zip(city_list_num_hotels,
+                    city_list_num_events,
+                    city_list_num_trails,
+                    city_list_num_clubs,
+                    city_list_num_rests):
 
-        if filter == 'Hotel Price':
-            for num_hotels, num_trails, num_events in \
-                    zip(city_list_num_hotels,
-                        city_list_num_trails,
-                        city_list_num_events):
-                if num_hotels.num_hotels > 0:
-                    city_tuple_list.append((num_hotels.num_hotels,
-                                            num_trails.num_trails,
-                                            num_events.num_events,
-                                            num_events.city,
-                                            num_events.state))
-        elif filter == 'Restaurant Rating':
-            for num_rests, num_trails, num_events in zip(city_list_num_rests,
-                                                         city_list_num_trails,
-                                                         city_list_num_events):
-                if num_rests.num_rests > 0:
-                    city_tuple_list.append((num_rests.num_rests,
-                                            num_trails.num_trails,
-                                            num_events.num_events,
-                                            num_events.city,
-                                            num_events.state))
-        elif filter == 'Events/Concerts':
-            for num_events, num_trails, num_rests in zip(city_list_num_events,
-                                                         city_list_num_trails,
-                                                         city_list_num_rests):
+            if user_filter == 'Hotel Price' and num_hotels.num_hotels == 0:
+                continue
+            elif user_filter == 'Restaurant Rating' and \
+                 num_rests.num_rests == 0:
+                continue
+            elif user_filter == 'Events/Concerts' and \
+                 num_events.num_events == 0:
+                continue
+            elif user_filter == 'Night Life' and num_clubs.num_clubs == 0:
+                continue
+            elif ((user_filter == 'Outdoor Recreation' or
+                   user_filter == 'None') and num_trails.num_trails == 0):
+                continue
+            else:
+                city_tuple_list.append((num_trails.num_trails,
+                                        num_events.num_events,
+                                        num_rests.num_rests,
+                                        num_hotels.num_hotels,
+                                        num_clubs.num_clubs,
+                                        num_events.city,
+                                        num_events.state))
 
-                if num_events.num_events > 0:
-                    city_tuple_list.append((num_events.num_events,
-                                            num_trails.num_trails,
-                                            num_rests.num_rests,
-                                            num_events.city,
-                                            num_events.state))
-        elif filter == 'Night Life':
-            for num_clubs, num_trails, num_events in zip(city_list_num_clubs,
-                                                         city_list_num_trails,
-                                                         city_list_num_events):
-                if num_clubs.num_clubs > 0:
-                    city_tuple_list.append((num_clubs.num_clubs,
-                                            num_trails.num_trails,
-                                            num_events.num_events,
-                                            num_events.city,
-                                            num_events.state))
-        else:
-            for num_trails, num_events, num_rests in zip(city_list_num_trails,
-                                                         city_list_num_events,
-                                                         city_list_num_rests):
-                if num_trails.num_trails > 0:
-                    city_tuple_list.append((num_trails.num_trails,
-                                            num_events.num_events,
-                                            num_rests.num_rests,
-                                            num_events.city,
-                                            num_events.state))
-
-        city_tuple_list.sort(key=lambda x: x[0], reverse=True)
-        city_list = city_tuple_list[:5]
+    sort_index = filter_dict[user_filter]
+    city_tuple_list.sort(key=lambda x: x[sort_index], reverse=True)
+    city_list = city_tuple_list[:5]
 
     return city_list
 
 
-def build_filter_dict(filter, city_event_list, user):
+def build_template_dict(city_event_list, user):
     """
         This method builds the dictionary to pass to the template for
         rendering.  It takes a city event list and returns the dictionary
         that the template will display.
 
-        :param filter:
         :param city_event_list:
+        :param user:
         :return:
     """
     city_dict_list = []
-    if filter == 'Hotel Price':
-        for hotel, trail, event, city, state in city_event_list:
-            city = City.objects.get(city=city, state=state)
-            rating = city.get_avg_rating().get('rating')
-            if rating is not None:
-                rating_range = range(int(rating))
-            else:
-                rating_range = 0
+    for trail, event, rest, hotel, club, city, state in city_event_list:
+        city = City.objects.get(city=city, state=state)
+        rating = city.get_avg_rating().get('rating')
+        if rating is not None:
+            rating_range = range(int(rating))
+        else:
+            rating_range = 0
+        has_rated = (user.is_authenticated and
+                     user.customer.has_rated_city(city.id))
 
-            city_dict = {'city': city,
-                         'rating': rating,
-                         'range': rating_range,
-                         'has_rated': (user.is_authenticated and
-                                       user.customer.has_rated_city(city.id)),
-                         'Stats':
-                             [{'Label': 'Number low priced hotels (under '
-                                        '$125)',
-                                'number': hotel},
-                              {'Label': 'Number of Outdoor Recreation '
-                                        'activities',
-                                'number': trail},
-                              {'Label': 'Number of Events such as '
-                                'concerts or festivals',
-                                'number': event}]
-                        }
-            city_dict_list.append(city_dict)
-    elif filter == 'Restaurant Rating':
-        for rest, trail, event,city, state in city_event_list:
-            city = City.objects.get(city=city, state=state)
-            rating = city.get_avg_rating().get('rating')
-            if rating != None:
-                rating_range = range(int(rating))
-            else:
-                rating_range = 0
-            city_dict = {'city': city,
-                         'rating': rating,
-                         'range': rating_range,
-                         'has_rated': (user.is_authenticated and
-                                       user.customer.has_rated_city(city.id)),
-                         'Stats':
-                             [{'Label': 'Number of Top rated '
-                                'restaurants (rated 4.0 or '
-                                'higher)',
-                                'number': rest},
-                              {'Label': 'Number of Outdoor Recreation '
-                                'activities',
-                                'number': trail},
-                              {'Label': 'Number of Events such as '
-                                'concerts or festivals',
-                                'number': event}]
-                        }
-            city_dict_list.append(city_dict)
-    elif filter == 'Events/Concerts':
-        for event, trail, rest, city, state in city_event_list:
-            city = City.objects.get(city=city, state=state)
-            rating = city.get_avg_rating().get('rating')
-            if rating != None:
-                rating_range = range(int(rating))
-            else:
-                rating_range = 0
-            if user.is_authenticated():
-                has_rated = user.customer.has_rated_city(city.id)
-            else:
-                has_rated = False
-            city_dict = {'city': city,
-                         'rating': rating,
-                         'range': rating_range,
-                         'has_rated': has_rated,
-                         'Stats':
-                             [{'Label': 'Number of Events such as '
-                                'concerts or festivals',
-                                'number': event},
-                              {'Label': 'Number of Outdoor Recreation '
-                                'activities',
-                                'number': trail},
-                              {'Label': 'Number of Top rated '
-                                'restaurants (rated 4.0 or '
-                                'higher)',
-                                'number': rest}]
-                        }
-            city_dict_list.append(city_dict)
-    elif filter == 'Night Life':
-        for club, trail, event, city, state in city_event_list:
-            city = City.objects.get(city=city, state=state)
-            rating = city.get_avg_rating().get('rating')
-            if rating != None:
-                rating_range = range(int(rating))
-            else:
-                rating_range = 0
-            if user.is_authenticated():
-                has_rated = user.customer.has_rated_city(city.id)
-            else:
-                has_rated = False
-            city_dict = {'city': city,
-                         'rating': rating,
-                         'range': rating_range,
-                         'has_rated': has_rated,
-                         'Stats':
-                             [{'Label': 'Number of Night clubs',
-                                'number': club},
-                              {'Label': 'Number of Outdoor Recreation '
-                                'activities',
-                                'number': trail},
-                              {'Label': 'Number of Events such as '
-                                'concerts or festivals',
-                                'number': event}]
-                        }
-            city_dict_list.append(city_dict)
-    else:
-        for trail, event, rest, city, state in city_event_list:
-            city = City.objects.get(city=city, state=state)
-            rating = city.get_avg_rating().get('rating')
-            if rating != None:
-                rating_range = range(int(rating))
-            else:
-                rating_range = 0
-            if user.is_authenticated():
-                has_rated = user.customer.has_rated_city(city.id)
-            else:
-                has_rated = False
-            city_dict = {'city': city,
-                         'rating': rating,
-                         'range': rating_range,
-                         'has_rated': has_rated,
-                         'Stats':
-                             [{'Label': 'Number of Outdoor Recreation '
-                                'activities',
-                                'number': trail},
-                              {'Label': 'Number of Events such as '
-                                'concerts or festivals',
-                                'number': event},
-                              {'Label': 'Number of Top rated '
-                                'restaurants (rated 4.0 or '
-                                'higher)',
-                                'number': rest}]
-                        }
-            city_dict_list.append(city_dict)
+        city_dict = {'city': city,
+                     'rating': rating,
+                     'range': rating_range,
+                     'has_rated': has_rated,
+                     'Stats':
+                         [{'Label': 'Number of Outdoor Recreation '
+                           'activities',
+                           'number': trail},
+                          {'Label': 'Number of Events such as '
+                           'concerts or festivals',
+                           'number': event},
+                          {'Label': 'Number of Top rated '
+                           'restaurants (rated 4.0 or '
+                           'higher)',
+                           'number': rest},
+                          {'Label': 'Number low priced hotels (under $125)',
+                           'number': hotel},
+                          {'Label': 'Number of Night clubs',
+                           'number': club}]}
+        city_dict_list.append(city_dict)
 
     return city_dict_list
 
@@ -290,27 +166,26 @@ def get_outdoor_context(city):
     :return:
     """
     context = {}
-    outdoors_trails = city.outdoorrecreation_set.filter(
-            name__icontains='trail')
-    outdoors_mountain_resorts = city.outdoorrecreation_set.filter(
-            name__icontains='mountain resort')
-    outdoors_campground = city.outdoorrecreation_set.filter(
-            name__icontains='campground')
-    outdoors_state_park = city.outdoorrecreation_set.filter(
-            name__icontains='state park')
-    outdoors_peak = city.outdoorrecreation_set.filter(
-            Q(name__icontains='peak') | Q(name__icontains='lookout'))
-    outdoors_lake = city.outdoorrecreation_set.filter(
-            name__icontains='lake')
-    outdoors_other = city.outdoorrecreation_set.exclude(reduce(
-                            operator.or_,
-                                (Q(name__icontains='trail'),
-                                 Q(name__icontains='mountain resort'),
-                                 Q(name__icontains='campground'),
-                                 Q(name__icontains='state park'),
-                                 Q(name__icontains='peak'),
-                                 Q(name__icontains='lookout'),
-                                 Q(name__icontains='lake'))))
+    outdoors_trails = city.outdoorrecreation_set.\
+        filter(name__icontains='trail')
+    outdoors_mountain_resorts = city.outdoorrecreation_set.\
+        filter(name__icontains='mountain resort')
+    outdoors_campground = city.outdoorrecreation_set.\
+        filter(name__icontains='campground')
+    outdoors_state_park = city.outdoorrecreation_set.\
+        filter(name__icontains='state park')
+    outdoors_peak = city.outdoorrecreation_set.\
+        filter(Q(name__icontains='peak') | Q(name__icontains='lookout'))
+    outdoors_lake = city.outdoorrecreation_set.\
+        filter(name__icontains='lake')
+    outdoors_other = city.outdoorrecreation_set.\
+        exclude(reduce(operator.or_, (Q(name__icontains='trail'),
+                                      Q(name__icontains='mountain resort'),
+                                      Q(name__icontains='campground'),
+                                      Q(name__icontains='state park'),
+                                      Q(name__icontains='peak'),
+                                      Q(name__icontains='lookout'),
+                                      Q(name__icontains='lake'))))
     context['outdoors_trails'] = outdoors_trails
     context['num_outdoors_trails'] = len(outdoors_trails)
     context['outdoors_mountain_resorts'] = outdoors_mountain_resorts
@@ -326,11 +201,11 @@ def get_outdoor_context(city):
     context['outdoors_other'] = outdoors_other
     context['num_outdoors_other'] = len(outdoors_other)
     context['show_outdoor'] = ((len(outdoors_trails) > 0) or
-                              (len(outdoors_mountain_resorts) > 0) or
-                              (len(outdoors_campground) > 0) or
-                              (len(outdoors_state_park) > 0) or
-                              (len(outdoors_lake) > 0) or
-                              (len(outdoors_other) > 0))
+                               (len(outdoors_mountain_resorts) > 0) or
+                               (len(outdoors_campground) > 0) or
+                               (len(outdoors_state_park) > 0) or
+                               (len(outdoors_lake) > 0) or
+                               (len(outdoors_other) > 0))
     return context
 
 
@@ -343,9 +218,9 @@ def get_hotel_context(city):
     context = {}
     hotels_lt50 = city.hotel_set.filter(high_rate__lt=50)
     hotels_50_100 = city.hotel_set.filter(low_rate__gt=50,
-                                              high_rate__lt=100)
+                                          high_rate__lt=100)
     hotels100_125 = city.hotel_set.filter(low_rate__gt=100,
-                                              high_rate__lt=125)
+                                          high_rate__lt=125)
     context['hotels_lt50'] = hotels_lt50
     context['num_hotels_lt50'] = len(hotels_lt50)
     context['hotels_50_100'] = hotels_50_100
@@ -353,8 +228,8 @@ def get_hotel_context(city):
     context['hotels100_125'] = hotels100_125
     context['num_hotels100_125'] = len(hotels100_125)
     context['show_hotels'] = ((len(hotels_lt50) > 0) or
-                             (len(hotels_50_100) > 0) or
-                             (len(hotels100_125) > 0))
+                              (len(hotels_50_100) > 0) or
+                              (len(hotels100_125) > 0))
 
     return context
 
@@ -376,8 +251,8 @@ def get_restaurant_context(city):
     context['restaurants5'] = restaurants5
     context['num_restaurants5'] = len(restaurants5)
     context['show_restaurants'] = ((len(restaurants4) > 0) or
-                              (len(restaurants4_5) > 0) or
-                              (len(restaurants5) > 0))
+                                   (len(restaurants4_5) > 0) or
+                                   (len(restaurants5) > 0))
     return context
 
 

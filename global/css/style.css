@@ -58,12 +58,7 @@ figure {
 }
 .city-detail-item {
   color: #111;
-  font-size: 13px;
-  text-decoration: none;
-  font-family: 'Open sans';
-}
-.city-detail-item a:hover {
-  color: #4db74f;
+
   font-size: 13px;
   text-decoration: none;
   font-family: 'Open sans';
@@ -1008,10 +1003,12 @@ blockquote:before {
   line-height: 30px;
 }
 .sort-view .sort-by label {
+  font-size: 25px;
   color: #111111;
   font-weight: bold;
-  font-family: 'Open sans';
+  font-family: 'Georgia';
   margin: 0;
+  padding: 15%
   float: left;
 }
 .sort-view .sort-by .sort-select {
@@ -1090,6 +1087,7 @@ blockquote:before {
   height: 0;
   content: '';
   border-bottom: 8px solid #fff;
+  border-left: 8px solid #fff;
   bottom: -4px;
   left: 0;
 }
@@ -2623,7 +2621,7 @@ blockquote:before {
 }
 .sub-banner2 {
   padding-top: 60px;
-  padding-bottom: 425px;
+  padding-bottom: 485px;
   padding-left: 15px;
   padding-right: 15px;
 }

@@ -42,10 +42,6 @@ def find_user_clicked(selected_filter):
     city_click_list = CityClick.objects.\
         filter(customer__user_filter=selected_filter).\
         order_by('-num_clicks')[:10]
-        # filter(customer__user_filter=selected_filter).annotate(
-        #         count=Count('num_clicks')).order_by('-count')[:10]
-
-
 
     return city_click_list
 
@@ -59,9 +55,8 @@ def apply_user_filter(filter, city_list):
         :return:
     """
     if len(city_list) > 0:
-        query = reduce(
-                operator.or_,
-                (Q(city=city, state=state)
+        query = reduce(operator.or_,
+                       (Q(city=city, state=state)
                         for city, state, dist in city_list))
 
         city_list_num_hotels = City.objects.filter(query).annotate(
@@ -78,66 +73,57 @@ def apply_user_filter(filter, city_list):
         city_tuple_list = []
 
         if filter == 'Hotel Price':
-            for num_hotels, num_trails, num_events in zip(city_list_num_hotels,
-                                                         city_list_num_trails,
-                                                         city_list_num_events):
+            for num_hotels, num_trails, num_events in \
+                    zip(city_list_num_hotels,
+                        city_list_num_trails,
+                        city_list_num_events):
                 if num_hotels.num_hotels > 0:
-                    city_tuple_list.append(
-                            (num_hotels.num_hotels,
-                              num_trails.num_trails,
-                              num_events.num_events,
-                              num_events.city,
-                              num_events.state)
-                        )
+                    city_tuple_list.append((num_hotels.num_hotels,
+                                            num_trails.num_trails,
+                                            num_events.num_events,
+                                            num_events.city,
+                                            num_events.state))
         elif filter == 'Restaurant Rating':
             for num_rests, num_trails, num_events in zip(city_list_num_rests,
                                                          city_list_num_trails,
                                                          city_list_num_events):
                 if num_rests.num_rests > 0:
-                    city_tuple_list.append(
-                            (num_rests.num_rests,
-                              num_trails.num_trails,
-                              num_events.num_events,
-                              num_events.city,
-                              num_events.state)
-                        )
+                    city_tuple_list.append((num_rests.num_rests,
+                                            num_trails.num_trails,
+                                            num_events.num_events,
+                                            num_events.city,
+                                            num_events.state))
         elif filter == 'Events/Concerts':
             for num_events, num_trails, num_rests in zip(city_list_num_events,
                                                          city_list_num_trails,
                                                          city_list_num_rests):
 
                 if num_events.num_events > 0:
-                    city_tuple_list.append(
-                            (num_events.num_events,
-                              num_trails.num_trails,
-                              num_rests.num_rests,
-                              num_events.city,
-                              num_events.state)
-                        )
+                    city_tuple_list.append((num_events.num_events,
+                                            num_trails.num_trails,
+                                            num_rests.num_rests,
+                                            num_events.city,
+                                            num_events.state))
         elif filter == 'Night Life':
             for num_clubs, num_trails, num_events in zip(city_list_num_clubs,
                                                          city_list_num_trails,
                                                          city_list_num_events):
                 if num_clubs.num_clubs > 0:
-                    city_tuple_list.append(
-                            (num_clubs.num_clubs,
-                              num_trails.num_trails,
-                              num_events.num_events,
-                              num_events.city,
-                              num_events.state)
-                        )
+                    city_tuple_list.append((num_clubs.num_clubs,
+                                            num_trails.num_trails,
+                                            num_events.num_events,
+                                            num_events.city,
+                                            num_events.state))
         else:
             for num_trails, num_events, num_rests in zip(city_list_num_trails,
                                                          city_list_num_events,
                                                          city_list_num_rests):
                 if num_trails.num_trails > 0:
-                    city_tuple_list.append(
-                            (num_trails.num_trails,
-                              num_events.num_events,
-                              num_rests.num_rests,
-                              num_events.city,
-                              num_events.state)
-                        )
+                    city_tuple_list.append((num_trails.num_trails,
+                                            num_events.num_events,
+                                            num_rests.num_rests,
+                                            num_events.city,
+                                            num_events.state))
 
         city_tuple_list.sort(key=lambda x: x[0], reverse=True)
         city_list = city_tuple_list[:5]
@@ -160,18 +146,16 @@ def build_filter_dict(filter, city_event_list, user):
         for hotel, trail, event, city, state in city_event_list:
             city = City.objects.get(city=city, state=state)
             rating = city.get_avg_rating().get('rating')
-            if rating != None:
+            if rating is not None:
                 rating_range = range(int(rating))
             else:
                 rating_range = 0
-            if user.is_authenticated():
-                has_rated = user.customer.has_rated_city(city.id)
-            else:
-                has_rated = False
+
             city_dict = {'city': city,
                          'rating': rating,
                          'range': rating_range,
-                         'has_rated': has_rated,
+                         'has_rated': (user.is_authenticated and
+                                       user.customer.has_rated_city(city.id)),
                          'Stats':
                              [{'Label': 'Number low priced hotels (under '
                                         '$125)',
@@ -192,14 +176,11 @@ def build_filter_dict(filter, city_event_list, user):
                 rating_range = range(int(rating))
             else:
                 rating_range = 0
-            if user.is_authenticated():
-                has_rated = user.customer.has_rated_city(city.id)
-            else:
-                has_rated = False
             city_dict = {'city': city,
                          'rating': rating,
                          'range': rating_range,
-                         'has_rated': has_rated,
+                         'has_rated': (user.is_authenticated and
+                                       user.customer.has_rated_city(city.id)),
                          'Stats':
                              [{'Label': 'Number of Top rated '
                                 'restaurants (rated 4.0 or '

@@ -62,4 +62,5 @@ target/
 .envrc
 .idea/
 travel/__pycache__/
+travelWhere/__pycache__/
 __pycache__/

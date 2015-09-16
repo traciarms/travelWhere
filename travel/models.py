@@ -11,7 +11,7 @@ class TruncatingCharField(models.CharField):
         case we are getting data larger than expected.
     """
     def get_prep_value(self, value):
-        value = super(TruncatingCharField,self).get_prep_value(value)
+        value = super(TruncatingCharField, self).get_prep_value(value)
         if value:
             return value[:self.max_length]
         return value
@@ -44,9 +44,9 @@ class Customer(models.Model):
     zip_code = models.CharField(max_length=10, null=True,
                                 validators=[validate_zip_code])
     user_filter = models.CharField(max_length=50,
-                                    choices=FILTER_CATEGORY_CHOICES,
-                                    default=OUT_DOOR_RECREATION,
-                                    verbose_name='Primary Search Filter')
+                                   choices=FILTER_CATEGORY_CHOICES,
+                                   default=OUT_DOOR_RECREATION,
+                                   verbose_name='Primary Search Filter')
 
     def has_rated_city(self, city_id):
         city = City.objects.get(pk=city_id)
@@ -57,7 +57,7 @@ class Customer(models.Model):
     def __str__(self):
         return ("User: {}, Address: {}, City: {}, State: {}, Zipcode: {},"
                 .format(self.user, self.address, self.city,
-                                   self.state, self.zip_code))
+                        self.state, self.zip_code))
 
 
 class City(models.Model):
@@ -136,7 +136,7 @@ class OutdoorRecreation(models.Model):
     description = models.TextField(null=True)
 
     def natural_key(self):
-        return (self.name, self.loc_city, self.state)
+        return self.name, self.loc_city, self.state
 
     class Meta:
         unique_together = (('name', 'loc_city', 'state'),)
@@ -157,7 +157,8 @@ class Rating(models.Model):
     customer = models.ForeignKey(Customer)
     city = models.ForeignKey(City)
     rating = models.IntegerField(validators=[MinValueValidator(1),
-                                              MaxValueValidator(5)])
+                                             MaxValueValidator(5)])
+
 
 class HotelClick(models.Model):
     hotel = models.ForeignKey(Hotel)

@@ -165,11 +165,24 @@ def location_search(request):
 
             city_click_list = find_user_clicked(selected_filter)
 
-            context = {'city_dict': city_dict_list,
-                       'filter': filter,
-                       'selected_filter': selected_filter,
-                       'city_click_list': city_click_list}
-            return render(request, 'city_list.html', context)
+            if len(city_dict_list) == 0:
+                if request.user.is_authenticated():
+                    form = LoggedInSearchForm(
+                        initial={'user_filter': selected_filter})
+                else:
+                    form = InitSearchForm()
+                context = {'form': form,
+                           'message': 'Your search returned 0 results - '
+                                      'please try again'}
+
+                return render(request, 'index.html', context)
+            else:
+
+                context = {'city_dict': city_dict_list,
+                           'filter': filter,
+                           'selected_filter': selected_filter,
+                           'city_click_list': city_click_list}
+                return render(request, 'city_list.html', context)
 
         else:
             context = {'form': form}

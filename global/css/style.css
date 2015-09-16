@@ -1090,7 +1090,6 @@ blockquote:before {
   height: 0;
   content: '';
   border-bottom: 8px solid #fff;
-  border-left: 8px solid #fff;
   bottom: -4px;
   left: 0;
 }
@@ -2624,7 +2623,7 @@ blockquote:before {
 }
 .sub-banner2 {
   padding-top: 60px;
-  padding-bottom: 485px;
+  padding-bottom: 425px;
   padding-left: 15px;
   padding-right: 15px;
 }

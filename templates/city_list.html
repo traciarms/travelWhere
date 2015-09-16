@@ -124,11 +124,10 @@
                                             {% if each.rating != None %}
                                                 User Rating:
                                                 <span class="hotel-star">
-                                                {% for i in each.range %}
-                                                    <i class="glyphicon glyphicon-star"></i>
-                                                {% endfor %}
-
-                                                </span>
+                                                    {% for i in each.range %}
+                                                        <i class="glyphicon glyphicon-star"></i>
+                                                    {% endfor %}
+                                                </span><br>
                                             {% endif %}
                                             {% if user.is_authenticated %}
                                                 {% if not each.has_rated %}
@@ -137,7 +136,7 @@
                                                     </a>
                                                 {% endif %}
                                             {% endif %}
-                                            <br><br><br>
+                                            <br><br>
                                             <ul>
                                                 {% for stats in each.Stats %}
                                                     {% if stats.number > 0 %}
@@ -176,7 +175,8 @@
                                 <!-- Search Result -->
                                 <div class="search-result">
                                     <p>
-                                        <ins>Top Cities</ins> other users with the <ins>same filter</ins>
+                                        <ins>Top Cities</ins> other users
+                                        with the <ins>same filter</ins>
                                         <span>have selected:</span>
                                     </p>
                                 </div>

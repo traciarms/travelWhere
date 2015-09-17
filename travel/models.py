@@ -158,33 +158,3 @@ class Rating(models.Model):
     city = models.ForeignKey(City)
     rating = models.IntegerField(validators=[MinValueValidator(1),
                                              MaxValueValidator(5)])
-
-
-class HotelClick(models.Model):
-    hotel = models.ForeignKey(Hotel)
-    customer = models.ForeignKey(Customer)
-    num_clicks = models.IntegerField(default=0)
-
-
-class EventClick(models.Model):
-    event = models.ForeignKey(Event)
-    customer = models.ForeignKey(Customer)
-    num_clicks = models.IntegerField(default=0)
-
-
-class RestaurantClick(models.Model):
-    restaurant = models.ForeignKey(Restaurant)
-    customer = models.ForeignKey(Customer)
-    num_clicks = models.IntegerField(default=0)
-
-
-class NightLifeClick(models.Model):
-    nightlife = models.ForeignKey(NightLife)
-    customer = models.ForeignKey(Customer)
-    num_clicks = models.IntegerField(default=0)
-
-
-class OutdoorRecreationClick(models.Model):
-    outdoorrecreation = models.ForeignKey(OutdoorRecreation)
-    customer = models.ForeignKey(Customer)
-    num_clicks = models.IntegerField(default=0)

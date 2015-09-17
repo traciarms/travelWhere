@@ -56,7 +56,12 @@ def find_user_clicked(selected_filter):
 def apply_user_filter(user_filter, city_list):
     """
         This method applies the filter selected by the user to the list
-        passed in.  It returns the filtered list.
+        passed in.  It builds on the list of city, state adding to it the
+        number of events, hotels, restaurants, outdoor recreation, and
+        night clubs and returns the filtered list.
+
+        It could be improved by moving the filter out of the code and
+        putting it into the database as its own lookup table.
         :param user_filter:
         :param city_list:
         :return:
@@ -132,8 +137,11 @@ def build_template_dict(city_event_list, user):
             rating_range = range(int(rating))
         else:
             rating_range = 0
-        has_rated = (user.is_authenticated and
-                     user.customer.has_rated_city(city.id))
+
+        if user.is_authenticated():
+            has_rated = user.customer.has_rated_city(city.id)
+        else:
+            has_rated = False
 
         city_dict = {'city': city,
                      'rating': rating,

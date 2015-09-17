@@ -49,7 +49,8 @@
   <div class="modal-content">
     <div class="modal-header" style="padding:35px 50px;">
       <button type="button" class="close" data-dismiss="modal">&times;</button>
-      <h4>Hotels in {{ city.city }}<br> with a nightly rate less than $50:</h4>
+      <h4>Hotels in {{ city.city }}<br> with a nightly rate between $50
+          and $100:</h4>
     </div>
     <div class="modal-body" style="padding:40px 50px;">
       <form role="form">
@@ -74,11 +75,12 @@
   <div class="modal-content">
     <div class="modal-header" style="padding:35px 50px;">
       <button type="button" class="close" data-dismiss="modal">&times;</button>
-      <h4>Hotels in {{ city.city }}<br> with a nightly rate less than $50:</h4>
+      <h4>Hotels in {{ city.city }}<br> with a nightly
+          rate between $100 and $125:</h4>
     </div>
     <div class="modal-body" style="padding:40px 50px;">
       <form role="form">
-          {% for each in hotel.hotels_100_125 %}
+          {% for each in hotel.hotels100_125 %}
             <div class="form-group well well-sm">
                 <u>{{ each.name }}:</u><br>
                 {{ each.address }}, {{ each.loc_city }},
@@ -647,19 +649,19 @@ $(document).ready(function(){
                                                           <li>  <a class="city-detail-item" data-toggle="modal" href="#hotel_lt50Modal">
                                                                 Number of hotels with rates less than $50:
                                                                 <strong class="vcard-stat-count">{{ hotel.num_hotels_lt50 }}</strong><br>
-                                                            </a><li>
+                                                            </a></li>
                                                         {% endif %}
                                                         {% if hotel.num_hotels_50_100 > 0 %}
                                                            <li> <a class="city-detail-item" data-toggle="modal" href="#hotel_50_100Modal">
                                                                 Number of hotels with rates between $50 and $100:
                                                                 <strong class="vcard-stat-count">{{ hotel.num_hotels_50_100 }}</strong><br>
-                                                            </a><li>
+                                                            </a></li>
                                                         {% endif %}
                                                         {% if hotel.num_hotels100_125 %}
                                                            <li> <a class="city-detail-item" data-toggle="modal" href="#hotel_100_125Modal">
                                                                 Number of hotels with rates between $100 and $125:
                                                                 <strong class="vcard-stat-count">{{ hotel.num_hotels100_125 }}</strong><br>
-                                                            </a><li>
+                                                            </a></li>
                                                         {% endif %}
                                                         </li>
                                                     </ul>

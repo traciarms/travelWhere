@@ -1087,7 +1087,6 @@ blockquote:before {
   height: 0;
   content: '';
   border-bottom: 8px solid #fff;
-  border-left: 8px solid #fff;
   bottom: -4px;
   left: 0;
 }

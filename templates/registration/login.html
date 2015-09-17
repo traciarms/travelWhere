@@ -24,8 +24,8 @@
             <div class="container">
                 <!-- Logo -->
                 <div class="logo float-left">
-                    <a href="{% url "index" %}" title="">
-                    <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt=""></a>
+{#                    <a href="{% url "index" %}" title="">#}
+{#                    <img src="{% static "images/background/logo/TWlogo.jpg" %}" alt=""></a>#}
                 </div>
                 <!-- End Logo -->
                 <!-- Bars -->
@@ -43,9 +43,6 @@
                                     <li>
                                         <a href="{% url "index" %}" title="">Search</a>
                                     </li>
-{#                                    <li>#}
-{#                                        <a href="{% url 'logout' %}" title="">Logout</a>#}
-{#                                    </li>#}
 
                                 </ul>
                             </div>
@@ -100,18 +97,6 @@
                                                 </ul>
 
                                             </div>
-
-{#                                            <div class="col-md-6">#}
-{#                                                <h4 class="my-profile__title">Location</h4>#}
-{#                                                <ul>#}
-{#                                                    <li><span>Street Address</span>{{ form.address }}</li>#}
-{#                                                    <li><span>City</span>{{ form.city }}</li>#}
-{#                                                    <li><span>State</span>{{ form.state }}</li>#}
-{#                                                        {{ form.zip_code_errors }}#}
-{#                                                    <li><span>Zip Code</span>{{ form.zip_code }}</li>#}
-{#                                                </ul>#}
-{#                                            </div>#}
-{#                                            <input class="awe-btn" type="submit" name="submit" value="Submit">#}
                                         </form>
                                     </div>
 

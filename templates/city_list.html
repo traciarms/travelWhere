@@ -86,22 +86,36 @@
 
                                 <!-- Sort by and View by -->
                                 <div class="sort-view clearfix">
-                                    <div class="sort-by float-left">
+                                    <div class="search-result">
                                         <p>
-                                        <label>Your Top Cities ranked by:&nbsp;
+                                            Your <ins>Top Cities</ins> ranked by
                                             {% if user.is_authenticated %}
                                                 {% if selected_filter != 'None' %}
-                                                    {{ selected_filter }}
+                                                    <ins>{{ selected_filter }}</ins>
                                                 {% else %}
-                                                    Outdoor Recreation
+                                                     <ins>Outdoor Recreation</ins>
                                                 {% endif %}
                                             {% else %}
-                                                Outdoor Recreation
+                                                 <ins>Outdoor Recreation</ins>
                                             {% endif %}
-                                        </label>
                                         </p>
-                                    <!-- View by -->
-                                </div>
+                                    </div>
+{#                                    <div class="sort-by float-left">#}
+{#                                        <p>#}
+{#                                        <label>Your Top Cities ranked by:&nbsp;#}
+{#                                            {% if user.is_authenticated %}#}
+{#                                                {% if selected_filter != 'None' %}#}
+{#                                                    {{ selected_filter }}#}
+{#                                                {% else %}#}
+{#                                                    Outdoor Recreation#}
+{#                                                {% endif %}#}
+{#                                            {% else %}#}
+{#                                                Outdoor Recreation#}
+{#                                            {% endif %}#}
+{#                                        </label>#}
+{#                                        </p>#}
+{#                                    <!-- View by -->#}
+{#                                </div>#}
                                 <!-- End Sort by and View by -->
 
                                 <!-- Hotel Grid Content-->
@@ -171,12 +185,12 @@
                         <!-- Sidebar Hotel -->
                         <div class="col-md-3 col-md-pull-9">
                             <!-- Sidebar Content -->
-                            <div class="sidebar-cn">
+                            <div class="sidebar-cn2">
                                 <!-- Search Result -->
-                                <div class="search-result">
-                                    <p>
-                                        <ins>Top Cities</ins> other users with the <ins>same filter</ins>
-                                        <span>have selected:</span>
+                                <div class="sort-view sort-by sort-select float-left">
+                                    <p><br><br><br><br>
+                                        <label>Top Cities other users with the same filter
+                                        <span>have selected:</span></label>
                                     </p>
                                 </div>
                                 <!-- End Search Result -->
@@ -187,15 +201,17 @@
                                             <br><br>
                                             {% for city in city_click_list %}
 
-                                                <div class=" col-md-10">
-                                                <a class="hotel-text"
-                                                   href="{% url 'city_detail' city.city.id %}">
-                                                    <label for="destination">
-                                                        <span>{{ city.city.city }},
-                                                            {{ city.city.state }}<br><br>
-                                                        </span>
-                                                    </label>
-                                                </a>
+                                                <div class="col-md-10">
+                                                    <div>
+                                                    <a class="hotel-text"
+                                                       href="{% url 'city_detail' city.city.id %}">
+                                                        <label for="destination">
+                                                            <span>{{ city.city.city }},
+                                                                {{ city.city.state }}<br><br>
+                                                            </span>
+                                                        </label>
+                                                    </a>
+                                                    </div>
                                                 </div>
                                             {% endfor %}
                                         </div>

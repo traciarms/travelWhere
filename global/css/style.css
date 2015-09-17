@@ -1014,6 +1014,9 @@ blockquote:before {
 .sort-view .sort-by .sort-select {
   margin: 0px 15px;
   font-family: 'Open sans';
+  padding-top: 30%;
+  /*padding-left: 10%;*/
+  /*padding-right: 15%;*/
 }
 .sort-view .sort-by .sort-select:after {
   position: absolute;
@@ -1086,8 +1089,8 @@ blockquote:before {
   width: 0;
   height: 0;
   content: '';
-  border-bottom: 8px solid #fff;
-  bottom: -4px;
+  /*border-bottom: 8px solid #fff;*/
+  bottom: -1px;
   left: 0;
 }
 .search-result p {
@@ -3561,8 +3564,8 @@ blockquote:before {
   -o-transition: all 0.2s linear;
 }
 .hotel-detail2 {
-  padding-top: 40px;
-  padding-left: 10px;
+  padding-top: 105px;
+  padding-left: 60px;
   color: #25ab4b;
   font-size: 30px;
   line-height: 32px;
@@ -3711,6 +3714,11 @@ blockquote:before {
 /* SideBar*/
 .sidebar-cn .search-sidebar {
   padding: 0 30px;
+}
+.sidebar-cn2 {
+  padding-top: 12%;
+  padding-left: 24px;
+  border-right: 1px dotted #9e9e9e;
 }
 .sidebar-cn .search-sidebar .form-radio {
   margin-top: 20px;
